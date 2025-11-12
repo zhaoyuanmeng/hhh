@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>测量</title>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="测量-坐标" transform="translate(-181.000000, -213.000000)">
+            <g id="测量备份-3" transform="translate(192.500000, 225.000000) rotate(-360.000000) translate(-192.500000, -225.000000) translate(179.000000, 213.000000)">
+                <g id="编组-11" transform="translate(0.600000, 1.600000)">
+                    <g id="编组" transform="translate(0.900000, 0.900000)">
+                        <rect id="矩形" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" transform="translate(12.500000, 5.000000) rotate(-360.000000) translate(-12.500000, -5.000000) " x="1.5" y="0.5" width="22" height="9"></rect>
+                        <rect id="矩形" fill="#FFFFFF" transform="translate(10.100000, 7.500000) rotate(-360.000000) translate(-10.100000, -7.500000) " x="9.2" y="4.8" width="1.8" height="5.4"></rect>
+                        <rect id="矩形备份-12" fill="#FFFFFF" transform="translate(14.300000, 8.100000) rotate(-360.000000) translate(-14.300000, -8.100000) " x="13.4" y="6" width="1.8" height="4.2"></rect>
+                        <rect id="矩形备份-16" fill="#FFFFFF" transform="translate(18.500000, 7.500000) rotate(-360.000000) translate(-18.500000, -7.500000) " x="17.6" y="4.8" width="1.8" height="5.4"></rect>
+                        <rect id="矩形备份-14" fill="#FFFFFF" transform="translate(23.500000, 16.000000) rotate(-360.000000) translate(-23.500000, -16.000000) " x="22.5" y="13.5" width="2" height="5"></rect>
+                        <rect id="矩形备份-13" fill="#FFFFFF" transform="translate(5.900000, 8.100000) rotate(-360.000000) translate(-5.900000, -8.100000) " x="5" y="6" width="1.8" height="4.2"></rect>
+                        <rect id="矩形备份-15" fill="#FFFFFF" transform="translate(1.500000, 16.000000) rotate(-360.000000) translate(-1.500000, -16.000000) " x="0.5" y="13.5" width="2" height="5"></rect>
+                        <rect id="矩形" fill="#FFFFFF" transform="translate(12.500000, 16.500000) rotate(-360.000000) translate(-12.500000, -16.500000) " x="1.5" y="15.5" width="22" height="2"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

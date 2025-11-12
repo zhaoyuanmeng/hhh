@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.CommercialRoomInfoMapper">
+    
+    <select id="getRoomLeaseData" resultType="com.xaxc.teqin.model.entity.CommercialRoomInfo">
+        SELECT
+            r.ID,
+            r.room_code,
+            r.room_title,
+            r.x,
+            r.y,
+            r.z,
+            l.tenant,
+            l.status
+        FROM
+            commercial_room_info r
+                LEFT JOIN commercial_lease_info l ON r.room_code = l.code
+        where building_id = #{buildingId} and floor_number = #{floorNumber}
+    </select>
+
+
+    <select id="getLeaseEnterpriseData" parameterType="int" resultType="com.xaxc.teqin.model.entity.CommercialRoomInfo">
+        SELECT
+            r.ID,
+            r.room_code,
+            r.room_title,
+            r.x,
+            r.y,
+            r.z,
+            l.tenant,
+            l.status,
+            r.building_id,
+            b.building_name,
+            r.floor_number
+
+        FROM
+            commercial_lease_info l
+                LEFT JOIN commercial_enterprise_info e ON l.tenant = e.name
+                LEFT JOIN commercial_room_info r ON l.code = r.room_code
+                LEFT JOIN commercial_building_info b on r.building_id = b."id"
+        WHERE
+            e.TYPE = #{type}  and  r.x != '0'
+    </select>
+
+</mapper>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56px" height="56px" viewBox="0 0 56 56" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>旋转</title>
+    <g id="CIM一张图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="数据演示-按键交互" transform="translate(-128.000000, -921.000000)">
+            <g id="旋转" transform="translate(127.995501, 921.000000)">
+                <path d="M13.7110508,28 C13.7110508,32.9705627 17.740488,37 22.7110508,37 C27.6816135,37 31.7110508,32.9705627 31.7110508,28 C31.7110508,23.0294373 27.6816135,19 22.7110508,19 C20.2331036,19 17.9890512,20.0014226 16.3615249,21.6216363" id="路径" stroke="#FFFFFF" stroke-width="2"></path>
+                <polygon id="三角形" fill="#FFFFFF" transform="translate(15.004499, 22.927399) rotate(-135.000000) translate(-15.004499, -22.927399) " points="15.0044994 19.9273993 19.0044994 25.9273993 11.0044994 25.9273993"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

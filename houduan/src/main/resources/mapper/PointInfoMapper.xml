@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.PointInfoMapper">
+
+    <select id="getSumOfWayTotalLength" parameterType="string" resultType="double">
+        SELECT SUM
+                   ( CAST ( COALESCE ( DATA ->> 'TotalLengthOfMileage', '0' ) AS NUMERIC ) ) AS totalLength
+        FROM
+            point_info
+        WHERE child_type_id = #{ childTypeId } and
+            DATA ->> 'TotalLengthOfMileage' ~ '^[-+]?[0-9]*\.?[0-9]+$'
+    </select>
+
+    <select id="getSumOfPointTotalArea" parameterType="string" resultType="double">
+        SELECT SUM
+                   ( CAST ( COALESCE ( REPLACE(DATA ->> 'zhandimianji','㎡',''), '0' ) AS NUMERIC ) ) AS totalLength
+        FROM
+            point_info
+        WHERE
+            child_type_id = #{ childTypeId } AND
+            REPLACE(DATA ->> 'zhandimianji','㎡','') ~ '^[-+]?[0-9]*\.?[0-9]+$'
+    </select>
+
+
+    <select id="getPointNumOfWay" parameterType="string" resultType="int">
+        select count(*)
+        from point_info
+        where parent_type_id = #{ typeId }
+          and child_type_id <![CDATA[ <>  ]]> #{ childTypeId }
+    </select>
+
+    <select id="getPointData" parameterType="string" resultType="map">
+        SELECT T.child_type_id as id,
+               s.archives_name as name,
+               T.num           as num
+        FROM (SELECT child_type_id, COUNT(*) AS num
+              FROM point_info
+              WHERE parent_type_id = #{ typeId }
+                AND jcxx_id = #{jcxxId}
+              GROUP BY child_type_id) T
+                 LEFT JOIN special_service_archives s ON T.child_type_id = s.ID
+            AND s.del_flag = '0'
+        ORDER BY s.sort ASC
+    </select>
+
+    <select id="getPointType" parameterType="string" resultType="map">
+        SELECT ID,
+               archives_name AS NAME
+        FROM special_service_archives
+        WHERE del_flag = '0'
+          AND kind is not null
+          AND parent_id = #{ typeId }
+          AND ID <![CDATA[ <>  ]]> #{jcxxTypeId}
+        ORDER BY sort ASC
+    </select>
+
+    <select id="getPointSpecialType" parameterType="string" resultType="map">
+        SELECT ID,
+               archives_name AS NAME
+        FROM special_service_archives
+        WHERE del_flag = '0'
+          -- AND special_type is not null
+          AND parent_id = #{ typeId }
+          AND ID <![CDATA[ <>  ]]> #{jcxxTypeId}
+        ORDER BY sort ASC
+    </select>
+
+    <select id="getIdByFieldName" parameterType="string" resultType="string">
+        select id
+        from point_info
+        where data ->>#{key} = #{name}
+          and child_type_id = #{typeId}
+    </select>
+
+    <select id="getPointsByName" parameterType="string" resultType="map">
+        SELECT T.ID,
+               T.NAME,
+               s.archives_name AS TYPE,
+               T.jingdu,
+               T.weidu
+        FROM
+            (
+                SELECT ID
+                        ,
+                       child_type_id,
+                       COALESCE ( DATA ->> 'title', '' ) || COALESCE ( DATA ->> 'mingcheng', '' ) AS NAME,
+                       DATA ->> 'jingdu' AS jingdu,
+                    DATA ->> 'weidu' AS weidu
+                FROM
+                    point_info
+                WHERE
+                    DATA ->> 'jingdu' IS NOT NULL
+                  AND DATA ->> 'weidu' IS NOT NULL
+            )
+                T LEFT JOIN special_service_archives s ON T.child_type_id = s.ID
+        where t.NAME like '%' || #{name} || '%'
+    </select>
+
+
+    <select id="getPointInfoPage" resultType="com.xaxc.teqin.model.entity.PointInfo">
+        SELECT A.archives_name as type,
+               i.*
+        FROM
+            point_info i,
+            special_service_archives A
+        WHERE
+            i.child_type_id = A.ID
+    </select>
+
+    <select id="getPointDataType" parameterType="string" resultType="string">
+        SELECT A.archives_name as type
+        FROM
+            point_info i,
+            special_service_archives A
+        WHERE
+            i.child_type_id = A.ID and i.id = #{id}
+    </select>
+
+    <select id="getByName" parameterType="string"  resultType="com.xaxc.teqin.model.entity.PointInfo">
+        SELECT *
+        FROM (SELECT *,
+                     COALESCE(DATA ->> 'title', '' ) || COALESCE(DATA ->> 'mingcheng', '' ) AS NAME
+              FROM point_info) t
+        where t.NAME = #{name}
+    </select>
+
+
+
+    <select id="queryListByParentId" parameterType="string" resultType="com.xaxc.teqin.model.entity.PointInfo">
+        select * from point_info
+        where    parent_type_id = #{parentTypeId}
+        and jcxx_id is null
+        order by id desc
+    </select>
+
+    <select id="queryListByJcxxId" parameterType="string" resultType="com.xaxc.teqin.model.entity.PointInfo">
+        select * from point_info
+        where    jcxx_id = #{jcxxId}
+        order by id desc
+    </select>
+
+    <select id="getPointListByJcxxId" parameterType="string" resultType="com.xaxc.teqin.model.entity.PointExtInfo">
+        SELECT e.id,
+        e.name,
+        e.type,
+        st_asgeojson(st_asewkt(e.geom)) as geojson,
+        i.child_type_id,
+        i.parent_type_id
+        FROM point_ext_info e left join point_info i on e.id = i.id
+        where i.jcxx_id = #{jcxxId}
+    </select>
+
+    <select id="getFeatureTypeData" parameterType="string" resultType="map">
+        SELECT DISTINCT P.child_type_id as typeId,
+                        e.TYPE as typeName
+        FROM
+            point_info P,
+            point_ext_info e
+        WHERE
+            P.ID = e.ID
+          AND P.jcxx_id = #{id}
+          AND e.geom IS NOT NULL
+    </select>
+
+    <select id="getFeaturePosition" parameterType="string" resultType="com.xaxc.teqin.model.entity.FeaturePositionData">
+        SELECT st_asgeojson(st_asewkt(e.geom)) as geojson, p.data->>'weizhi' as weizhi, e.type
+        FROM
+            point_info P,
+            point_ext_info e
+        WHERE
+            P.ID = e.ID
+          AND P.jcxx_id = #{jcxxId}
+          and p.child_type_id = #{typeId}
+          AND e.geom IS NOT NULL
+    </select>
+</mapper>

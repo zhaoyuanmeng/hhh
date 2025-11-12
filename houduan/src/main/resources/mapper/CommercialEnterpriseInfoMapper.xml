@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.CommercialEnterpriseInfoMapper">
+
+    <select id="getMerchantData" resultType="map">
+        SELECT COUNT
+                   ( CASE WHEN TYPE = 1 THEN ID END ) enterpriseNum,
+
+               COUNT
+                   ( DISTINCT CASE WHEN TYPE = 1 THEN industry END ) enterpriseType,
+
+               COUNT
+                   ( CASE WHEN TYPE = 2 THEN ID END ) businessNum,
+               COUNT
+                   ( DISTINCT CASE WHEN TYPE = 2 THEN industry END ) businessType
+        FROM
+            commercial_enterprise_info
+    </select>
+
+    <select id="getMerchantDataByType" parameterType="int" resultType="com.xaxc.teqin.model.entity.CommercialEnterpriseInfo">
+        SELECT
+            e.*,
+            MAX ( r.x ) AS x,
+            MAX ( r.y ) AS y,
+            MAX ( r.z ) AS z
+        FROM
+            commercial_enterprise_info e
+                LEFT JOIN commercial_lease_info l ON e.NAME = l.tenant
+                LEFT JOIN commercial_room_info r ON l.code = r.room_code
+        where e.type = #{type}
+        GROUP BY
+            e.ID
+
+    </select>
+</mapper>

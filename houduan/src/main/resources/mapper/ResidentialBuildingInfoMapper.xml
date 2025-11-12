@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.ResidentialBuildingInfoMapper">
+
+    <select id="getResidenceData" resultType="java.util.Map">
+        SELECT count(DISTINCT 村社区名称) as communityNum,count(DISTINCT 网格名称) as estateNum,count(DISTINCT 房屋地址) as householdNum,count(DISTINCT 身份证) as residenceNum from  rd_community_data
+    </select>
+
+    <select id="getHouseholdNumOfFloor" resultType="java.lang.Integer" parameterType="string">
+        select up_number from t_dc_area_room_record where building_id = #{buildingId} and unit = #{unitNum} limit 1
+    </select>
+    <select id="getHouseFloor" resultType="java.lang.Integer" parameterType="string">
+        select up_floor from t_dc_area_room_record where building_id = #{buildingId} and unit = #{unitNum} limit 1
+    </select>
+
+
+
+    <select id="getRdBuildingInfo" parameterType="string" resultType="com.xaxc.teqin.model.entity.ResidentialBuildingInfo">
+        WITH building_data AS (
+            SELECT *
+            FROM rd_community_data
+            WHERE 楼宇名称 = #{buildingName}
+        )
+SELECT DISTINCT 楼宇名称 as buildingName,村社区名称 as communityName, 网格名称 as estateName, 乡镇街道名称||村社区名称||楼宇名称 as buildingAddress,
+                        (SELECT count(DISTINCT 身份证) from  building_data ) as householdRsNumber,
+
+                        (SELECT count(DISTINCT 单元名称) from  building_data) as unitNumber,
+
+
+                        (SELECT SUM
+                                    ( CAST ( floor_number AS BIGINT ) * CAST ( household_number AS BIGINT ) )
+                         FROM
+                             (
+                                 SELECT
+                                     单元名称 AS unit_number,
+                                     SUBSTRING (
+                                             CAST ( MAX ( CAST ( 房屋名称 AS BIGINT ) ) AS TEXT ),
+                                             0,
+                                             LENGTH ( CAST ( MAX ( CAST ( 房屋名称 AS BIGINT ) ) AS TEXT ) ) - 1
+                                         ) AS floor_number,
+                                     MAX (
+                                             SUBSTRING ( CAST ( CAST ( 房屋名称 AS BIGINT ) AS TEXT ), LENGTH ( CAST ( CAST ( 房屋名称 AS BIGINT ) AS TEXT ) ) )
+                                         ) AS household_number
+                                 FROM
+                                     building_data
+                                 GROUP BY
+                                     单元名称
+                             ) T) as householdNumber,
+
+        (SELECT SUM
+                   (
+                        CASE
+                            WHEN string_to_array( 人员标签, ',' ) &amp;&amp; ARRAY [ '信教人员',
+                                '服刑人员',
+                                '缠访闹访人员',
+                                '“武疯子”（“酒疯子”）',
+                                '2次以上行政拘留人员',
+                                '涉羟人员',
+                                '境外人口',
+                                '台胞',
+                                '涉稳重点人员',
+                                '失信人员',
+                                '危险品从业人员',
+                                '吸毒人员',
+                                '上访人员',
+                                '邪教人员',
+                                '刑满释放人员',
+			'重点人群' ] THEN
+                                1 ELSE 0
+                            END
+                   )
+        FROM
+            building_data) as focusNumber
+                        from  rd_community_data where 楼宇名称=#{buildingName} and 房屋名称 ~ '^\d+$';
+    </select>
+
+    <select id="getRdHouseList" resultType="com.xaxc.teqin.model.entity.HouseInfo">
+        WITH converted_data AS (
+            SELECT
+                房屋地址 as id,
+                CASE
+                    WHEN 房屋名称 ~ '^\d+$' THEN
+                        CAST(房屋名称 AS BIGINT)
+                    ELSE
+                        NUll
+                    END as houseNumber,
+                人员标签,
+                楼宇名称,
+                CAST(单元名称 AS BIGINT) as unit_num
+            FROM rd_community_data
+        )
+
+      SELECT  DISTINCT id,houseNumber, CASE
+                                           WHEN houseNumber IS NOT NULL
+                                               THEN SUBSTRING(CAST(houseNumber AS TEXT), 1, GREATEST(LENGTH(CAST(houseNumber AS TEXT)) - 2, 0))
+                                           ELSE NULL
+          END AS floorNumber,
+                         CASE
+                             WHEN string_to_array( 人员标签, ',' ) &amp;&amp; ARRAY [ '信教人员',
+		'服刑人员',
+		'缠访闹访人员',
+		'“武疯子”（“酒疯子”）',
+		'2次以上行政拘留人员',
+		'涉羟人员',
+		'境外人口',
+		'台胞',
+		'涉稳重点人员',
+		'失信人员',
+		'危险品从业人员',
+		'吸毒人员',
+		'上访人员',
+		'邪教人员',
+		'刑满释放人员',
+		'重点人群' ] THEN
+                                 1 ELSE 0
+                             END AS focusNumber
+        from  converted_data where 楼宇名称=#{buildingName} and unit_num = #{unitNum} and houseNumber IS NOT NULL ORDER BY houseNumber desc;
+    </select>
+
+    <select id="getRdBuildingUnitData" resultType="map">
+        SELECT
+            SUBSTRING (
+                    CAST ( MAX ( CAST ( 房屋名称 AS BIGINT ) ) AS TEXT ),
+                    0,
+                    LENGTH ( CAST ( MAX ( CAST ( 房屋名称 AS BIGINT ) ) AS TEXT ) ) - 1
+                ) AS floor_number,
+            MAX (
+                    SUBSTRING ( CAST ( CAST ( 房屋名称 AS BIGINT ) AS TEXT ), LENGTH ( CAST ( CAST ( 房屋名称 AS BIGINT ) AS TEXT ) ) )
+                ) AS household_number
+        FROM
+            rd_community_data
+        WHERE
+            楼宇名称=#{buildingName}  AND
+            CAST (单元名称 AS BIGINT ) = #{unitNum} and 房屋名称 ~ '^\d+$'
+    </select>
+
+    <select id="getHouseDetail" parameterType="string" resultType="com.xaxc.teqin.model.entity.HouseInfo">
+        SELECT 楼宇名称 as buildingName,单元名称 as buildingCell,
+            房屋名称 AS houseNumber,房屋用途 AS roomType,房屋地址 AS ID, 房主姓名 AS ownerUserName,房主身份证 AS ownerUserCardCode,联系方式 AS ownerUserTel,
+            COUNT ( * ) AS perNumber,
+            SUM (
+                    CASE
+
+                        WHEN string_to_array( 人员标签, ',' ) &amp;&amp; ARRAY ['信教人员',
+			'服刑人员',
+			'缠访闹访人员',
+			'“武疯子”（“酒疯子”）',
+			'2次以上行政拘留人员',
+			'涉羟人员',
+			'境外人口',
+			'台胞',
+			'涉稳重点人员',
+			'失信人员',
+			'危险品从业人员',
+			'吸毒人员',
+			'上访人员',
+			'邪教人员',
+			'刑满释放人员',
+			'重点人群' ] THEN
+                            1 ELSE 0
+                        END
+                ) AS focusNumber
+        FROM
+            rd_community_data
+        WHERE
+            房屋地址 = #{roomAddress}
+        GROUP BY
+            楼宇名称,单元名称,房屋名称,房屋用途,房屋地址,房主姓名,房主身份证,联系方式
+    </select>
+
+    <select id="getResidenceList" parameterType="string" resultType="com.xaxc.teqin.model.entity.ResidenceInfo">
+        SELECT DISTINCT(身份证) as id,
+            身份证 AS identity_card,
+            姓名 AS name,性别 AS sex,民族 AS nation_name,户籍详址 AS register_address,联系电话 AS tel,
+            学历 AS education_name,就业状态 AS work_status_name,就业类型 AS work_type_name,行业类别 AS industry_type_name,
+            职业 AS post,服务处所 AS work_unit,
+            (
+                SELECT
+                    array_to_string( ARRAY_AGG (DISTINCT val ORDER BY val ), ',' )
+                FROM
+                    UNNEST ( string_to_array( COALESCE(人员标签, ''), ',' ) ) AS val
+                WHERE
+                        val = ANY(
+                                  ARRAY ['残疾证残障人士','服刑人员','缠访闹访人员','“武疯子”（“酒疯子”）',
+                                  '2次以上行政拘留人员','涉羟人员','境外人口','台胞','涉稳重点人员',
+                                  '失信人员','危险品从业人员','吸毒人员','上访人员','邪教人员',
+                                  '刑满释放人员','重点人群']
+                        )
+            ) AS focus_flag
+        FROM
+            rd_community_data where  房屋地址 = #{roomAddress}
+    </select>
+
+</mapper>

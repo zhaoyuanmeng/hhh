@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.TaskMapper">
+
+    <select id="selectCountByYear" resultType="map">
+        select to_char(task_start_time, 'YYYY'), count(*) from task WHERE delete_flag = 0 GROUP BY  to_char(task_start_time, 'YYYY')
+
+--         SELECT COUNT
+--                    ( CASE WHEN DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '5 year' THEN ID END ) ,
+--                COUNT ( CASE WHEN DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '4 year' THEN ID END ),
+--                COUNT ( CASE WHEN DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '3 year' THEN ID END ),
+--                COUNT ( CASE WHEN DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '2 year' THEN ID END ),
+--                COUNT ( CASE WHEN DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '1 year' THEN ID END ),
+--                COUNT ( CASE WHEN DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) THEN ID END )
+--         FROM
+--             task
+--         WHERE
+--             delete_flag = 0
+--         SELECT
+--             to_char( DATE_TRUNC( 'year', now( ) ) - INTERVAL '5 year', 'YYYY' ) as year1,
+--             COUNT ( * )
+--         FROM
+--             task
+--         WHERE
+--             delete_flag = 0
+--           AND DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '5 year' UNION ALL
+--         SELECT
+--             to_char( DATE_TRUNC( 'year', now( ) ) - INTERVAL '4 year', 'YYYY' ) as year1,
+--             COUNT ( * )
+--         FROM
+--             task
+--         WHERE
+--             delete_flag = 0
+--           AND DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '4 year' UNION ALL
+--         SELECT
+--             to_char( DATE_TRUNC( 'year', now( ) ) - INTERVAL '3 year', 'YYYY' ) as year1,
+--             COUNT ( * )
+--         FROM
+--             task
+--         WHERE
+--             delete_flag = 0
+--           AND DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '3 year' UNION ALL
+--         SELECT
+--             to_char( DATE_TRUNC( 'year', now( ) ) - INTERVAL '2 year', 'YYYY' ) as year1,
+--             COUNT ( * )
+--         FROM
+--             task
+--         WHERE
+--             delete_flag = 0
+--           AND DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '2 year' UNION ALL
+--         SELECT
+--             to_char( DATE_TRUNC( 'year', now( ) ) - INTERVAL '1 year', 'YYYY' ) as year1,
+--             COUNT ( * )
+--         FROM
+--             task
+--         WHERE
+--             delete_flag = 0
+--           AND DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) ) - INTERVAL '1 year' UNION ALL
+--         SELECT
+--             to_char( DATE_TRUNC( 'year', now( ) ), 'YYYY' ) as year1,
+--             COUNT ( * )
+--         FROM
+--             task
+--         WHERE
+--             delete_flag = 0
+--           AND DATE_TRUNC( 'year', task_start_time ) = DATE_TRUNC( 'year', now( ) )
+    </select>
+
+    <select id="statisticalQuantityOfLevel" resultType="map">
+        SELECT
+            task_level AS taskLevel,
+            COUNT ( * ) AS num
+        FROM
+            task
+        WHERE
+            delete_flag = 0
+        GROUP BY
+            task_level
+    </select>
+    
+    <select id="statisticalQuantity" resultType="map">
+        SELECT COUNT
+        ( CASE WHEN now( ) > task_end_time THEN ID END ) AS executed,
+        COUNT ( CASE WHEN now( ) <![CDATA[ <=  ]]> task_end_time THEN ID END ) AS executing,
+        COUNT ( * ) AS total
+        FROM
+        task
+        WHERE
+        delete_flag = 0
+    </select>
+
+    <select id="statisticalExecutingLevel" resultType="map">
+        SELECT
+        task_level,
+        COUNT ( * )
+        FROM
+        task
+        WHERE
+        delete_flag = 0
+        AND now( ) <![CDATA[ <=  ]]> task_end_time
+        group by task_level
+    </select>
+
+    <select id="statisticalAllLevel" resultType="map">
+        SELECT
+            task_level,
+            COUNT ( * )
+        FROM
+            task
+        WHERE
+            delete_flag = 0
+        group by task_level
+    </select>
+
+    <select id="statisticalExecutedLevel" resultType="map">
+        SELECT
+            task_level,
+            COUNT ( * )
+        FROM
+            task
+        WHERE
+            delete_flag = 0
+          AND now( ) > task_end_time
+        group by task_level
+    </select>
+
+    <select id="getExecutedList" resultType="com.xaxc.teqin.model.entity.Task">
+        SELECT
+            *
+        FROM
+            task
+        WHERE
+            delete_flag = 0
+          AND now( ) > task_end_time
+        order by task_start_time desc
+    </select>
+
+    <select id="getExecutingList" resultType="com.xaxc.teqin.model.entity.Task">
+        SELECT
+           *
+        FROM
+            task
+        WHERE
+            delete_flag = 0
+          AND now( )  <![CDATA[ <=  ]]> task_end_time
+        order by task_start_time desc
+    </select>
+
+</mapper>

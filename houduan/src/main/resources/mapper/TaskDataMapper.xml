@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.TaskDataMapper">
+    <select id="statisticsByType" resultType="map">
+        SELECT SUM
+        ( one_plus ) + SUM ( one ) + SUM ( two ) + SUM ( three ) + SUM ( SECURITY ) + SUM ( other ) as total,
+        SUM ( one_plus ) AS onePlus,
+        SUM ( one ) AS one,
+        SUM ( two ) AS two,
+        SUM ( three ) AS three,
+        SUM ( SECURITY ) AS SECURITY,
+        SUM ( other ) AS other
+        FROM
+        task_data
+        <if test="year != null and year != ''">
+            where year = #{year}
+        </if>
+    </select>
+
+    <select id="statisticsByYear" resultType="map">
+        SELECT YEAR
+                ,
+            one_plus + one + two + three + SECURITY + other AS total
+        FROM
+            task_data
+        ORDER BY
+            YEAR ASC
+    </select>
+</mapper>

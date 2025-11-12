@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.SceneInfoMapper">
+<!--    <select id="getStatistics" resultType="map" parameterType="string">-->
+<!--        SELECT-->
+<!--            key as name, jsonb_array_length(value) AS num-->
+<!--        FROM-->
+<!--            scene_info, jsonb_each(draw_data)-->
+<!--        where (key = 'police' or key = 'car') and id = #{id}-->
+<!--    </select>-->
+
+    <select id="getSimpleList"
+            resultType="com.xaxc.teqin.model.entity.SceneInfo">
+        SELECT
+            i.id,
+            i.task_id,
+            i.scene_name,
+            i.type,
+            i.basic_data_id,
+            p.child_type_id as basic_data_type_id
+        FROM
+            scene_info i left join point_info p on i.basic_data_id=p.id
+        WHERE
+            i.delete_flag = 0
+            <if test="ids!=null and ids.size > 0">
+                and i.id in
+                <foreach collection="ids" item="sceneId" index="i" open="(" close=")" separator=",">
+                    #{sceneId}
+                </foreach>
+            </if>
+            <if test="taskId != null and taskId != ''">
+                AND task_id = #{taskId}
+            </if>
+            <if test="type != null and type != ''">
+                AND type = #{type}
+            </if>
+        ORDER BY
+            begin_time ASC
+    </select>
+
+    <select id="getListByTaskId" parameterType="string"
+            resultType="com.xaxc.teqin.model.entity.SceneInfo">
+        select *
+        from scene_info
+        where delete_flag = 0
+          and task_id = #{taskId}
+        order by begin_time asc
+    </select>
+
+    <select id="getSimpleListByTaskIdAndType" parameterType="string"
+            resultType="com.xaxc.teqin.model.entity.SceneInfo">
+        select id,task_id,scene_name,type,begin_time,end_time,head,phone,scene_desc,basic_data_id,scene_road_desc,scene_road_length,scene_road_time,view_data
+        from scene_info
+        where delete_flag = 0
+          and task_id = #{taskId}
+        <if test="type != null and type != ''">
+            and type = #{type}
+        </if>
+        order by begin_time asc
+    </select>
+
+    <select id="getSchemeList" parameterType="com.xaxc.teqin.model.entity.SceneInfo"
+            resultType="com.xaxc.teqin.model.entity.SceneInfo">
+        select i.id,i.scene_name,i.type,i.basic_data_id, e.name as basicDataName, i.scene_road_desc,i.scene_road_length,i.scene_road_time,i.view_data
+        from scene_info i LEFT JOIN point_ext_info e on i.basic_data_id = e.id
+        where delete_flag = 0 and scheme_flag = 1
+                 <if test="dto.type != null and dto.type != ''">
+                     and i.type = #{dto.type}
+                 </if>
+                <if test="dto.level != null and dto.level != ''">
+                    and i.level = #{dto.level}
+                </if>
+                <if test="dto.basicDataId != null and dto.basicDataId != ''">
+                    and i.basic_data_id = #{dto.basicDataId}
+                </if>
+        order by i.begin_time asc
+    </select>
+
+    <select id="getSchemeStatistics" resultType="map">
+        SELECT
+            COALESCE ( SUM ( CASE WHEN TYPE = '1' THEN 1 END ), 0 ) AS a1,
+            COALESCE ( SUM ( CASE WHEN TYPE = '2' THEN 1 END ), 0 ) AS a2,
+            COALESCE ( SUM ( CASE WHEN TYPE = '3' THEN 1 END ), 0 ) AS a3,
+            COALESCE ( SUM ( CASE WHEN TYPE = '4' THEN 1 END ), 0 ) AS a4,
+            COALESCE ( SUM ( CASE WHEN TYPE = '5' THEN 1 END ), 0 ) AS a5
+        FROM
+            scene_info
+        WHERE
+            scheme_flag = 1
+          AND
+            delete_flag = 0
+    </select>
+
+    <select id="getDetailById" parameterType="string"
+            resultType="com.xaxc.teqin.model.entity.SceneInfo">
+        select i.*
+        from scene_info i
+        where i.delete_flag = 0
+          and i.id = #{id}
+    </select>
+
+    <select id="getDetailByTaskIdAndSceneName" parameterType="string"
+            resultType="com.xaxc.teqin.model.entity.SceneInfo">
+        select i.*
+        from scene_info i
+        where i.delete_flag = 0
+          and i.scene_name = #{sceneName}
+          and i.task_id = #{taskId} order by i.begin_time asc
+    </select>
+
+    <select id="getNumOfCrossSceneTime" parameterType="com.xaxc.teqin.model.entity.SceneInfo"
+            resultType="java.lang.Integer">
+        SELECT
+        COUNT( * )
+        FROM
+        scene_info
+        WHERE
+        delete_flag = 0
+          AND task_id = #{dto.taskId}
+        AND ( ( begin_time <![CDATA[ <=  ]]> #{dto.beginTime} AND end_time >  #{dto.beginTime} )
+        OR ( begin_time <![CDATA[ <  ]]>  #{dto.endTime} AND end_time >=  #{dto.endTime} ))
+        <if test="dto.id!=null and dto.id!=''">
+          AND id <![CDATA[ <>  ]]> #{dto.id}
+        </if>
+    </select>
+
+</mapper>

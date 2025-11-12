@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>上传</title>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="标签" transform="translate(-1502.000000, -355.000000)">
+            <g id="上传" transform="translate(1502.000000, 355.000000)">
+                <rect id="矩形" x="0" y="0" width="48" height="48" rx="1"></rect>
+                <path d="M25,8 L25,23 L40,23 L40,25 L25,25 L25,40 L23,40 L22.999,25 L8,25 L8,23 L23,23 L23,8 L25,8 Z" id="形状结合" fill="#D8D8D8"></path>
+            </g>
+        </g>
+    </g>
+</svg>

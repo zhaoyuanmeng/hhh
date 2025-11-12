@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>全屏2</title>
+    <g id="CIM一张图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="数据演示-按键交互" transform="translate(-1608.000000, -186.000000)" fill-rule="nonzero">
+            <g id="全屏2" transform="translate(1608.000000, 186.000000)">
+                <rect id="矩形" fill="#000000" opacity="0" x="0" y="0" width="24" height="24"></rect>
+                <path d="M1.509,14.406 L1.509,22.5 L9.6045,22.5 L6.1185,19.014 L9.627,15.5055 L8.505,14.3835 L4.9965,17.892 L1.509,14.406 Z M22.5,9.603 L22.5,1.509 L14.406,1.509 L17.892,4.9965 L14.385,8.505 L15.504,9.6255 L19.014,6.117 L22.5,9.603 Z M14.3955,22.491 L22.4895,22.491 L22.4895,14.3955 L19.0035,17.8815 L15.495,14.3745 L14.373,15.495 L17.883,19.0035 L14.3955,22.491 Z M9.594,1.5 L1.5,1.5 L1.5,9.594 L4.9875,6.108 L8.496,9.6165 L9.615,8.496 L6.108,4.986 L9.594,1.5 Z" id="形状" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

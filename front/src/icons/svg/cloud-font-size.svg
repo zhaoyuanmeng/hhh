@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>字体</title>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="标签" transform="translate(-806.000000, -517.000000)" fill-rule="nonzero">
+            <g id="编组-12备份-9" transform="translate(806.000000, 469.000000)">
+                <g id="字体" transform="translate(0.000000, 48.000000)">
+                    <rect id="矩形" fill="#000000" opacity="0" x="0" y="0" width="32" height="32"></rect>
+                    <polygon id="路径" fill="#D2D2D2" points="19.04 7.26 4.78 7.26 4.78 12.64 7.92 12.64 7.92 10.4 11.9 10.4 11.9 23.46 9.58 23.46 9.58 26.6 17.38 26.6 17.38 23.46 15.04 23.46 15.04 10.4 19.04 10.4 19.04 12.64 22.18 12.64 22.18 7.26"></polygon>
+                    <polygon id="路径" fill="#D2D2D2" opacity="0.658359124" points="25.4 15.38 17.12 15.38 17.12 18.5 18.94 18.5 18.94 17.2 21.26 17.2 21.26 24.78 19.92 24.78 19.92 26.6 24.44 26.6 24.44 24.78 23.08 24.78 23.08 17.2 25.4 17.2 25.4 18.5 27.22 18.5 27.22 15.38 25.4 15.38"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

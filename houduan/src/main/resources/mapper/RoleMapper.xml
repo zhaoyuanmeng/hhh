@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xaxc.teqin.mapper.RoleMapper">
+
+	<select id="selectRoleByNameOrCode" resultType="com.xaxc.teqin.model.dto.RoleDTO" parameterType="String">
+		SELECT
+			r.*
+		FROM
+			sys_role r
+		where r.delete_flag = 0 and (r.role_name = #{keyword} or r.role_code = #{keyword})
+	</select>
+
+	<select id="selectRoleList" resultType="com.xaxc.teqin.model.dto.RoleDTO" parameterType="com.xaxc.teqin.model.dto.RoleDTO">
+		SELECT
+			r.*
+		FROM
+		sys_role r
+
+		<where>
+			r.delete_flag = 0
+			<if test="dto.id != null and '' != dto.id">
+				AND u.id = #{dto.id}
+			</if>
+			<if test="dto.keyword != null and '' != dto.keyword">
+				and (r.role_name like concat(concat('%',#{dto.keyword}),'%'))
+			</if>
+		</where>
+		order by r.create_time desc
+	</select>
+</mapper>

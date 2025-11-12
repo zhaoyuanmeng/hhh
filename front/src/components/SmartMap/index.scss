@@ -1,0 +1,99 @@
+#player{
+  width: 100vw;
+  height: 100vh;
+  }
+.mapMain{
+  .tools{
+    position: absolute;
+    width: 62px;
+    top: 50%;
+    right: 0px;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+    background: url('./imgs/tool_bg.png');
+    background-size: 100% 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 240px;
+    .toolItem {
+      width: 60px;
+      position: relative;
+      cursor: pointer;
+      flex: 1;
+      .tool_text{
+        font-family: PingFangSC;
+        font-size: 12px;
+        color: #FFFFFF;
+        text-align: center;
+        position: absolute;
+        top: 48px;
+        margin-left: 6px;
+      }
+      .tckz{
+        width: 60px;
+        height: 60px;
+        background: url('./imgs/layerControl.png') no-repeat;
+        background-size: 100% 100%;
+
+      }
+      .dxms{
+        width: 60px;
+        height: 60px;
+        background: url('./imgs/dowmModel.png') no-repeat;
+        background-size: 100% 100%;
+      }
+      .tsfx{
+        width: 60px;
+        height: 60px;
+        background: url('./imgs/perspective_analysis.png') no-repeat;
+        background-size: 100% 100%;
+      }
+    }
+    .toolSelect{
+        width: 60px;
+        height: 60px;
+        background: url('./imgs//tool_select_bg.png') no-repeat;
+        background-size: 100% 100%;
+    }
+  }
+  .toolOne{
+    position: absolute;
+    width: 60px;
+    top: calc(50% - 65px);
+    right: 40px;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+    background-size: 100% 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 240px;
+    background: rgba(4, 35, 84, 0.83);
+    .jxkx{
+      width: 60px;
+      height: 60px;
+      background: url('./imgs/jxkx.png') no-repeat;
+      background-size: 100% 100%;
+
+    }
+    .yxkx{
+      width: 60px;
+      height: 60px;
+      background: url('./imgs/yxkx.png') no-repeat;
+      background-size: 100% 100%;
+    }
+    .mxkx{
+      width: 60px;
+      height: 60px;
+      background: url('./imgs/txkx.png') no-repeat;
+      background-size: 100% 100%;
+    }
+    .toolSelect{
+      width: 60px;
+      height: 60px;
+      background: url('./imgs//tool_select_bg.png') no-repeat;
+      background-size: 100% 100%;
+  }
+  }
+}

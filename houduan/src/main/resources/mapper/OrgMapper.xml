@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xaxc.teqin.mapper.OrgMapper">
+
+	<select id="selectOrgByName" resultType="com.xaxc.teqin.model.dto.OrgDTO" parameterType="String">
+		SELECT
+			r.*
+		FROM
+			sys_org r
+		where r.delete_flag = 0 and (r.short_name = #{keyword} or r.full_name = #{keyword})
+	</select>
+
+	<select id="selectOrgList" resultType="com.xaxc.teqin.model.dto.OrgDTO" parameterType="com.xaxc.teqin.model.dto.OrgDTO">
+		SELECT
+			r.*
+		FROM
+		sys_org r
+
+		<where>
+			r.delete_flag = 0
+			<if test="dto.id != null and '' != dto.id">
+				AND u.id = #{dto.id}
+			</if>
+			<if test="dto.keyword != null and '' != dto.keyword">
+				and (r.short_name like concat(concat('%',#{dto.keyword}),'%')
+				or r.full_name like concat(concat('%',#{dto.keyword}),'%') )
+			</if>
+		</where>
+		order by r.create_time desc
+	</select>
+</mapper>

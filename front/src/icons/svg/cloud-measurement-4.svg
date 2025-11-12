@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>坐标</title>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="测量-坐标" transform="translate(-106.000000, -288.000000)">
+            <g id="坐标" transform="translate(106.000000, 288.000000)">
+                <rect id="矩形" x="0" y="0" width="24" height="24"></rect>
+                <path d="M8.45406368,19.1932371 C6.96601999,19.5961316 6,20.246106 6,20.9793329 C6,22.2020384 8.6862915,23.1932371 12,23.1932371 C15.3137085,23.1932371 18,22.2020384 18,20.9793329 C18,20.2732986 17.1043034,19.6444562 15.7093173,19.2390737" id="路径" stroke="#FFFFFF"></path>
+                <circle id="椭圆形" stroke="#FFFFFF" fill-opacity="0.3" fill="#FFFFFF" cx="12" cy="8" r="3"></circle>
+                <path d="M12,19 C16.6666667,14.2439955 19,10.5773288 19,8 C19,4.13400675 15.8659932,1 12,1 C8.13400675,1 5,4.13400675 5,8 C5,10.5773288 7.33333333,14.2439955 12,19 Z" id="椭圆形" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"></path>
+            </g>
+        </g>
+    </g>
+</svg>

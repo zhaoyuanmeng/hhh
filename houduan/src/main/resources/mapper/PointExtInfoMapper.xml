@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.PointExtInfoMapper">
+
+    <select id="queryIntersectsPointData" parameterType="string" resultType="com.xaxc.teqin.model.entity.PointExtInfo">
+        SELECT e.id,
+               st_length(Geography(ST_GeomFromText(#{line},4326)))*ST_LineLocatePoint(ST_GeomFromText(#{line},4326),ST_ClosestPoint ( ST_GeomFromText(#{line},4326), ST_GeomFromText(st_asewkt(e.geom),4326)))/1000 as startDis,
+               st_length(Geography(ST_GeomFromText(#{line},4326)))*(1-ST_LineLocatePoint(ST_GeomFromText(#{line},4326),ST_ClosestPoint ( ST_GeomFromText(#{line},4326), ST_GeomFromText(st_asewkt(e.geom),4326))))/1000 as endDis,
+               e.name,
+               e.type,
+               i.data,
+               st_asgeojson(st_asewkt(e.geom)) as geojson,
+               s.archives_name as parent_type_name
+        FROM point_ext_info e left join point_info i on e.id = i.id left join special_service_archives s on i.parent_type_id = s.id
+        WHERE  ST_Intersects(ST_GeomFromText(#{polygon}, 4326), ST_GeomFromText(st_astext(e.geom), 4326))
+    </select>
+
+
+    <select id="getPointExtInfoList"  resultType="com.xaxc.teqin.model.entity.PointExtInfo">
+        SELECT e.id,
+        e.name,
+        e.type,
+        st_astext(e.geom) as geom,
+        st_asgeojson(st_asewkt(e.geom)) as geojson,
+        p.data
+        FROM point_ext_info e
+        left join point_info p on e.id = p.id
+        where
+        <if test="ids!=null and ids.size>0">
+             (e.id IN
+            <foreach collection="ids" item="id" index="i" open="(" close=")" separator=",">
+                <if test="(i % 999) == 998"> NULL ) OR e.id IN (</if>#{id}
+            </foreach>
+            )
+        </if>
+    </select>
+
+    <select id="queryIntersectsData" parameterType="string" resultType="com.xaxc.teqin.model.entity.PointExtInfo">
+        SELECT e.id,
+               e.name,
+               e.type,
+               st_asgeojson(st_asewkt(e.geom)) as geojson,
+               s.archives_name as parent_type_name
+        FROM point_ext_info e left join point_info i on e.id = i.id left join special_service_archives s on i.parent_type_id = s.id
+        WHERE  ST_Intersects(ST_GeomFromText(#{polygon}, 4326), ST_GeomFromText(st_astext(e.geom), 4326))
+    </select>
+
+    <select id="queryIntersectsDataOfWay" parameterType="string" resultType="com.xaxc.teqin.model.entity.PointExtInfo">
+        SELECT e.id,
+               e.name,
+               e.type,
+               st_asgeojson(st_asewkt(e.geom)) as geojson,
+               i.data,
+               s.archives_name as parent_type_name
+        FROM point_ext_info e left join point_info i on e.id = i.id left join special_service_archives s on i.parent_type_id = s.id
+        WHERE
+            i.jcxx_id = #{jcxxId}
+          and  ST_Intersects(ST_GeomFromText(#{polygon}, 4326), ST_GeomFromText(st_astext(e.geom), 4326))
+    </select>
+
+<!--    <select id="queryIntersectsData" parameterType="string" resultType="com.xaxc.teqin.model.entity.PointExtInfo">-->
+<!--        SELECT id,-->
+<!--               name,-->
+<!--               type,-->
+<!--               st_asgeojson(st_asewkt(geom)) as geojson-->
+<!--        FROM point_ext_info-->
+<!--        WHERE  ST_Intersects(ST_GeomFromText(#{polygon}, 4326), ST_GeomFromText(st_astext(geom), 4326))-->
+<!--                union all-->
+<!--        SELECT data->>'id' as id,-->
+<!--               name,-->
+<!--               type,-->
+<!--               st_asgeojson(st_asewkt(geom)) as geojson-->
+<!--        FROM draw_data-->
+<!--        WHERE delete_flag = 0  AND ST_Intersects(ST_GeomFromText(#{polygon}, 4326), ST_GeomFromText(st_astext(geom), 4326))-->
+<!--    </select>-->
+
+</mapper>

@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.DrawDataMapper">
+
+
+    <select id="getDistanceData" parameterType="string" resultType="map">
+        SELECT ID ,NAME,
+        st_distancesphere ( ST_StartPoint ( geom ), ST_GeomFromText ( #{point}, 4326 ) )/1000 as start_dis,
+        st_distancesphere ( ST_EndPoint ( geom ), ST_GeomFromText ( #{point}, 4326 ) )/1000 AS end_dis,
+        st_distancesphere ( ST_ClosestPoint ( geom, ST_GeomFromText ( #{point}, 4326 ) ), ST_GeomFromText ( #{point},
+        4326 ) ) AS minDis
+        FROM
+        draw_data
+        WHERE
+        delete_flag = 0
+        AND TYPE = 'lines'
+        AND data ->>'customStyle' = '0'
+        <if test="sceneId!=null and sceneId!=''">
+            AND scene_id = #{sceneId}
+        </if>
+        <if test="taskId!=null and taskId!=''">
+            AND task_id = #{taskId}
+        </if>
+        ORDER BY
+        minDis
+        LIMIT 1
+    </select>
+
+    <select id="getPoliceStatisticsOfScenePlanNode" resultType="map">
+        SELECT DATA -> 'marker' ->> 'userData' AS leixing, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) AS num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          and scene_id = #{sceneId}
+          and plan_node = #{planNode}
+          AND police_type in ('执勤警力'
+            , '应急处突警力')
+        GROUP BY
+            DATA -> 'marker' ->> 'userData'
+    </select>
+
+    <select id="getPoliceTotalOfScenePlanNode" resultType="java.lang.Integer">
+        SELECT COALESCE(SUM(COALESCE(CAST(DATA -> 'info' ->> 'num' AS INT ), 0)), 0) AS num
+        FROM draw_data
+        WHERE delete_flag = 0
+          and scene_id = #{sceneId}
+          and plan_node = #{planNode}
+          AND police_type in ('执勤警力', '应急处突警力')
+    </select>
+
+    <select id="getEmergencyPolice" resultType="java.lang.Integer">
+        SELECT COALESCE(SUM(COALESCE(CAST(DATA -> 'info' ->> 'num' AS INT ), 0)), 0) AS num
+        FROM draw_data
+        WHERE delete_flag = 0
+          and scene_id = #{sceneId}
+          AND police_type = '应急处突警力'
+    </select>
+    <select id="getEmergencyPoliceOfPosition" resultType="map">
+        SELECT id, DATA -> 'info' ->> 'weizhi' as weizhi,data -> 'marker'->> 'userData' as leixing, COALESCE(CAST(DATA -> 'info' ->> 'num' AS INT ), 0) AS num
+        FROM draw_data
+        WHERE delete_flag = 0
+             and scene_id = #{sceneId}
+          AND police_type = '应急处突警力' order by create_time asc
+    </select>
+
+    <select id="getPlacePoliceDetailOfScenePlanNode" resultType="map">
+        SELECT data -> 'info' ->>'weizhi' as weizhi, min (create_time) as create_time, data -> 'marker'->> 'userData' as leixing, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) as num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          and scene_id = #{sceneId}
+          and plan_node = #{planNode}
+          AND police_type in ('执勤警力'
+            , '应急处突警力')
+        group by data ->'info'->>'weizhi', data ->'marker'->>'userData'
+        ORDER BY create_time
+    </select>
+
+    <select id="getPoliceDetailOfScenePlanNode" resultType="map">
+        SELECT ID,
+               DATA -> 'info' ->> 'weizhi' AS weizhi, create_time, DATA -> 'marker' ->> 'userData' AS leixing, COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) AS num, DATA -> 'info' ->> 'buildName' AS buildName, DATA -> 'info' ->> 'floorNum' AS floorNum, DATA -> 'marker' ->> 'groupId' AS groupId
+
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          and scene_id = #{sceneId}
+          and plan_node = #{planNode}
+          and type = 'police'
+          AND police_type IN ( '执勤警力'
+            , '应急处突警力' )
+        ORDER BY
+            create_time
+    </select>
+
+    <select id="getDefenseLinePoliceDetailOfScenePlanNode" resultType="map">
+        SELECT
+        data->'info'->>'fangxian' as fangxian,
+        data->'info'->>'weizhi' as weizhi,
+        data-> 'marker'->> 'userData' as leixing,
+        COALESCE(SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ),0) as num
+        FROM
+        draw_data
+        WHERE
+        delete_flag = 0
+        and scene_id = #{sceneId}
+        and plan_node = #{planNode}
+        AND police_type in('执勤警力','应急处突警力')
+        <if test="lineName!=null">
+            AND DATA -> 'info' ->> 'fangxian' = #{lineName}
+        </if>
+        <if test="lineName==null">
+            AND DATA -> 'info' ->> 'fangxian' is null
+        </if>
+        group by data->'info'->>'fangxian',data->'info'->>'weizhi', data->'marker'->>'userData' ORDER BY weizhi
+    </select>
+    <select id="getDefenseLinePoliceDataOfScenePlanNode" resultType="map">
+        SELECT
+        data->'info'->>'fangxian' as fangxian,
+        data->'info'->>'weizhi' as weizhi,
+        data-> 'marker'->> 'userData' as leixing,
+        COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) as num,
+        COALESCE(data -> 'info' ->> 'buildName','') as buildName,
+        COALESCE(data -> 'info' ->> 'floorNum','') as floorNum,
+        COALESCE(data -> 'marker' ->> 'groupId','') as groupId,
+        id
+        FROM
+        draw_data
+        WHERE
+        delete_flag = 0
+        and scene_id = #{sceneId}
+        and plan_node = #{planNode}
+        AND police_type in('执勤警力','应急处突警力')
+        <if test="lineName!=null">
+            AND DATA -> 'info' ->> 'fangxian' = #{lineName}
+        </if>
+        <if test="lineName==null">
+            AND DATA -> 'info' ->> 'fangxian' is null
+        </if>
+        <if test="group!=null and group!=''">
+            AND DATA -> 'info' ->> 'group' = #{group}
+        </if>
+        <if test="group==''">
+            AND (DATA -> 'info' ->> 'group' is null or DATA -> 'info' ->> 'group' = #{group} )
+        </if>
+        ORDER BY create_time
+    </select>
+
+
+    <select id="getGroupOfLine" parameterType="string" resultType="map">
+     SELECT
+        distinct CASE
+        WHEN data->'info'->>'group' is null or data->'info'->>'group' = '' THEN
+        ''
+        ELSE
+        data->'info'->>'group'
+        END as group,
+        data->'info'->>'groupDesc' as groupDesc
+        FROM
+        draw_data
+        WHERE
+        delete_flag = 0
+        and scene_id = #{sceneId}
+         and plan_node = #{planNode}
+        AND police_type in('执勤警力','应急处突警力')
+                 <if test="lineName!=null">
+                     AND DATA -> 'info' ->> 'fangxian' = #{lineName}
+                 </if>
+                 <if test="lineName==null">
+                     AND DATA -> 'info' ->> 'fangxian' is null
+                 </if>
+
+    </select>
+
+
+    <select id="getLineOfScenePlanNode" resultType="map">
+        SELECT
+            fangxian
+        FROM
+            (
+                SELECT COALESCE
+                           ( DATA -> 'info' ->> 'fangxian', '' ) AS fangxian
+                FROM
+                    draw_data
+                WHERE
+                    delete_flag = 0
+                  and scene_id = #{sceneId}
+                  and plan_node = #{planNode}
+            ) T
+        GROUP BY
+            fangxian
+        ORDER BY
+            CASE
+
+                WHEN fangxian = '一道防线' THEN
+                    1
+                WHEN fangxian = '二道防线' THEN
+                    2
+                WHEN fangxian = '三道防线' THEN
+                    3 ELSE 0
+                END
+    </select>
+
+    <select id="getAllPoliceDetailOfScenePlanNode" resultType="map">
+        SELECT COALESCE(data -> 'info' ->>'fangxian','') as fangxian,
+               data -> 'info' ->>'weizhi' as weizhi, data -> 'marker'->> 'userData' as leixing, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) as num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          and scene_id = #{sceneId}
+          and plan_node = #{planNode}
+          AND police_type in ('执勤警力'
+            , '应急处突警力')
+        group by data ->'info'->>'fangxian', data ->'info'->>'weizhi', data ->'marker'->>'userData'
+        ORDER BY
+            CASE
+            WHEN data ->'info'->>'fangxian' = '一道防线' THEN
+            1
+            WHEN data ->'info'->>'fangxian' = '二道防线' THEN
+            2
+            WHEN data ->'info'->>'fangxian' = '三道防线' THEN
+            3
+            ELSE 0
+        END
+        ,weizhi
+    </select>
+
+    <select id="statisticalByPoliceType" parameterType="string" resultType="map">
+        SELECT
+        COALESCE(SUM( CASE WHEN police_type = '执勤警力' THEN COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 )
+        END ),0) AS onduty,
+        COALESCE(SUM ( CASE WHEN police_type = '应急处突警力' THEN COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ),
+        0 ) END ),0) AS emergency,
+        COALESCE(SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ),0) AS total
+        FROM
+        draw_data
+        WHERE
+        delete_flag = 0
+        AND scene_id = #{sceneId}
+        and plan_node = #{planNode}
+        AND police_type in('执勤警力','应急处突警力')
+        <if test="lineName!=null">
+            AND DATA -> 'info' ->> 'fangxian' = #{lineName}
+        </if>
+        <if test="lineName==null">
+            AND DATA -> 'info' ->> 'fangxian' is null
+        </if>
+    </select>
+
+    <select id="statisticalByPoliceTypeOfScenePlanNode" parameterType="string" resultType="map">
+        SELECT
+        COALESCE(SUM( CASE WHEN d.police_type = '执勤警力' THEN COALESCE ( CAST ( d.DATA -> 'info' ->> 'num' AS INT ), 0
+        ) END ),0) AS onduty,
+        COALESCE(SUM ( CASE WHEN d.police_type = '应急处突警力' THEN COALESCE ( CAST ( d.DATA -> 'info' ->> 'num' AS INT
+        ), 0 ) END ),0) AS emergency,
+        COALESCE(SUM ( COALESCE ( CAST ( d.DATA -> 'info' ->> 'num' AS INT ), 0 ) ),0) AS total
+        FROM
+        draw_data d left join scene_info s on d.scene_id = s.id
+        WHERE
+        d.delete_flag = 0
+        AND d.scene_id = #{sceneId}
+        and d.plan_node = #{planNode}
+        <if test="sceneType!=null and sceneType!=''">
+            and s.type = #{sceneType}
+        </if>
+        AND d.police_type in('执勤警力','应急处突警力')
+    </select>
+    <select id="statisticalPoliceType" parameterType="string" resultType="map">
+        SELECT
+        COALESCE(SUM( CASE WHEN d.police_type = '执勤警力' THEN COALESCE ( CAST ( d.DATA -> 'info' ->> 'num' AS INT ), 0
+        ) END ),0) AS onduty,
+        COALESCE(SUM ( CASE WHEN d.police_type = '应急处突警力' THEN COALESCE ( CAST ( d.DATA -> 'info' ->> 'num' AS INT
+        ), 0 ) END ),0) AS emergency,
+        COALESCE(SUM ( COALESCE ( CAST ( d.DATA -> 'info' ->> 'num' AS INT ), 0 ) ),0) AS total
+        FROM
+        draw_data d left join scene_info s on d.scene_id = s.id
+        WHERE
+        d.delete_flag = 0
+                AND d.scene_id = #{sceneId}
+                and d.plan_node = #{planNode}
+        <if test="lineName!=null">
+            and d.DATA -> 'info' ->> 'fangxian' = #{lineName}
+        </if>
+        <if test="group!=null">
+            and d.DATA -> 'info' ->> 'group' = #{group}
+        </if>
+        AND d.police_type in('执勤警力','应急处突警力')
+    </select>
+
+    <select id="statisticalByPoliceTypeOfTaskAndPlanNode" parameterType="string" resultType="map">
+        SELECT
+        COALESCE(SUM( CASE WHEN d.police_type = '执勤警力' THEN COALESCE ( CAST ( d.DATA -> 'info' ->> 'num' AS INT ), 0
+        ) END ),0) AS onduty,
+        COALESCE(SUM ( CASE WHEN d.police_type = '应急处突警力' THEN COALESCE ( CAST ( d.DATA -> 'info' ->> 'num' AS INT
+        ), 0 ) END ),0) AS emergency,
+        COALESCE(SUM ( COALESCE ( CAST ( d.DATA -> 'info' ->> 'num' AS INT ), 0 ) ),0) AS total
+        FROM
+        draw_data d left join scene_info s on d.scene_id = s.id
+        LEFT JOIN (
+        SELECT i.id, A.id as typeId
+        FROM
+        point_info i,
+        special_service_archives A
+        WHERE
+        i.child_type_id = A.ID
+        ) t on s.basic_data_id = t.id
+        WHERE
+        d.delete_flag = 0
+        AND d.task_id = #{taskId}
+        and d.plan_node = #{planNode}
+        AND d.police_type in('执勤警力','应急处突警力')
+        <if test="sceneType!=null and sceneType!=''">
+            and s.type = #{sceneType}
+        </if>
+        <if test="pointType!=null and pointType!=''">
+            and t.typeId = #{pointType}
+        </if>
+        <if test="pointType==null or pointType==''">
+            and t.typeId is null
+        </if>
+    </select>
+
+    <select id="statisticalByPostOfScenePlanNode" parameterType="string" resultType="map">
+        SELECT DATA -> 'marker' ->> 'userData' as post, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) as num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          AND scene_id = #{sceneId}
+          and plan_node = #{planNode}
+          AND police_type in ('执勤警力'
+            , '应急处突警力')
+        GROUP BY
+            DATA -> 'marker' ->> 'userData'
+    </select>
+
+    <select id="statisticalByPostOfLine" parameterType="string" resultType="map">
+        SELECT DATA -> 'marker' ->> 'userData' as post, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) as num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          AND scene_id = #{sceneId}
+          and plan_node = #{planNode}
+          AND police_type in ('执勤警力'
+            , '应急处突警力')
+          and COALESCE(DATA -> 'info' ->> 'fangxian','') = #{lineName}
+        GROUP BY
+            DATA -> 'marker' ->> 'userData'
+    </select>
+
+    <select id="getPoliceNumOfGroup" parameterType="string" resultType="int">
+        SELECT COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) as num
+        FROM
+        draw_data
+        WHERE
+        delete_flag = 0
+        AND scene_id = #{sceneId}
+        and plan_node = #{planNode}
+        <if test="lineName!=null">
+            and COALESCE(DATA -> 'info' ->> 'fangxian','') = #{lineName}
+        </if>
+        <if test="group!=null and group!=''">
+            and DATA -> 'info' ->> 'group' = #{group}
+        </if>
+        <if test="group==''">
+            and (DATA -> 'info' ->> 'group' = #{group} or DATA -> 'info' ->> 'group' is null)
+        </if>
+        AND police_type in ('执勤警力'
+        , '应急处突警力')
+    </select>
+    <select id="statisticalByPostOfGroup" parameterType="string" resultType="map">
+        SELECT DATA -> 'marker' ->> 'userData' as post, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) as num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          AND scene_id = #{sceneId}
+          and plan_node = #{planNode}
+        <if test="lineName!=null">
+            and  COALESCE(DATA -> 'info' ->> 'fangxian','') = #{lineName}
+        </if>
+        <if test="group!=null and group!=''">
+          and  DATA -> 'info' ->> 'group' = #{group}
+        </if>
+        <if test="group==''">
+            and (DATA -> 'info' ->> 'group' is null or DATA -> 'info' ->> 'group' = #{group} )
+        </if>
+          AND police_type in ('执勤警力'
+            , '应急处突警力')
+        GROUP BY
+            DATA -> 'marker' ->> 'userData'
+    </select>
+
+    <select id="statisticalQuantity" parameterType="string" resultType="map">
+        SELECT DATA -> 'marker' ->> 'userData' as type, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) as num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          AND scene_id = #{sceneId}
+          AND police_type in ('执勤警力'
+            , '应急处突警力')
+        GROUP BY
+            DATA -> 'marker' ->> 'userData'
+    </select>
+
+    <select id="getSceneDrawDataByTagId" parameterType="string" resultType="com.xaxc.teqin.model.entity.DrawData">
+        SELECT *
+        FROM draw_data
+        WHERE delete_flag = 0
+          AND scene_id = (SELECT scene_id FROM draw_data WHERE delete_flag = 0 AND DATA ->> 'id' = #{tagId} )
+    </select>
+
+    <select id="statisticalPolice" parameterType="string" resultType="map">
+        SELECT DATA -> 'marker' ->> 'userData' as type, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) AS num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          and task_id = #{taskId}
+          and plan_node = #{planNode}
+          AND police_type in ('执勤警力'
+            , '应急处突警力')
+        GROUP BY
+            DATA -> 'marker' ->> 'userData'
+    </select>
+
+    <select id="getPoliceDataOfTask" parameterType="string" resultType="map">
+        SELECT DATA -> 'marker' ->> 'userData' as type, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) as num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          and task_id = #{taskId}
+          AND police_type in ('执勤警力'
+            , '应急处突警力')
+        GROUP BY
+            DATA -> 'marker' ->> 'userData'
+    </select>
+
+    <select id="getPoliceDataNumOfTask" parameterType="string" resultType="java.lang.Integer">
+        SELECT COALESCE(SUM(COALESCE(CAST(DATA -> 'info' ->> 'num' AS INT ), 0)), 0)
+        FROM draw_data
+        WHERE delete_flag = 0
+          and task_id = #{taskId}
+          AND police_type in ('执勤警力', '应急处突警力')
+    </select>
+
+    <select id="getScenePoliceTypeDataOfTask" resultType="map">
+        SELECT T.scene_id,
+               i.scene_name,
+               i.type,
+               CASE
+                   WHEN i.type = '2' THEN '现场'
+                   WHEN i.type = '1' THEN '线路'
+                   WHEN i.type = '3' THEN '住地' END as scene_type,
+               onduty,
+               emergency,
+               total
+        FROM (SELECT scene_id,
+                     COALESCE(SUM(CASE
+                                      WHEN police_type = '执勤警力'
+                                          THEN COALESCE(CAST(DATA -> 'info' ->> 'num' AS INT ), 0) END), 0) AS onduty,
+                     COALESCE(SUM(CASE
+                                      WHEN police_type = '应急处突警力'
+                                          THEN COALESCE(CAST(DATA -> 'info' ->> 'num' AS INT ), 0) END),
+                              0)                                                                             AS emergency,
+                     COALESCE(SUM(COALESCE(CAST(DATA -> 'info' ->> 'num' AS INT ), 0)), 0)                  AS total
+              FROM draw_data
+              WHERE delete_flag = 0
+                AND task_id = #{taskId}
+                AND police_type in ('执勤警力', '应急处突警力')
+              GROUP BY scene_id) T,
+             scene_info i
+        WHERE T.scene_id = i.ID
+    </select>
+
+    <select id="getPoliceTypeDataOfTask" resultType="map">
+        SELECT i.type,
+               CASE
+                   WHEN i.type = '2' THEN '现场'
+                   WHEN i.type = '1' THEN '线路'
+                   WHEN i.type = '3' THEN '住地'
+                   ELSE '' END as scene_type,
+               COALESCE(SUM(CASE
+                                WHEN d.police_type = '执勤警力'
+                                    THEN CASE
+                                             WHEN d.DATA -> 'info' ->> 'num' ~ '^\d+$'
+                                                 THEN CAST(d.DATA -> 'info' ->> 'num' AS INT)
+                                             ELSE 0
+                                        END
+                               END), 0) AS onduty,
+               COALESCE(SUM(CASE
+                                WHEN d.police_type = '应急处突警力'
+                                    THEN CASE
+                                             WHEN d.DATA -> 'info' ->> 'num' ~ '^\d+$'
+                                                 THEN CAST(d.DATA -> 'info' ->> 'num' AS INT)
+                                             ELSE 0
+                                    END
+                                END), 0) AS emergency
+        FROM draw_data d,
+             scene_info i
+        WHERE d.delete_flag = 0
+          AND d.task_id = #{taskId}
+          AND d.police_type in ('执勤警力', '应急处突警力')
+          and i.delete_flag = 0
+          AND d.scene_id = i.id
+        GROUP BY i.type
+    </select>
+
+    <select id="getScenePoliceDataOfPosition" resultType="map">
+        SELECT DATA -> 'info' ->> 'weizhi' as weizhi, DATA -> 'marker' ->> 'userData' as leixing, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) AS num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          AND scene_id = #{sceneId}
+          and plan_node = #{planNode}
+          AND police_type IN ( '执勤警力'
+            , '应急处突警力' )
+        GROUP BY
+            DATA -> 'info' ->> 'weizhi',
+            DATA -> 'marker' ->> 'userData'
+        ORDER BY
+            DATA -> 'info' ->> 'weizhi'
+    </select>
+
+
+    <select id="getPostPoliceDataOfTask" resultType="map">
+        SELECT DATA -> 'marker' ->> 'userData'as leixing, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) AS num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          AND task_id = #{taskId}
+          AND police_type IN ( '执勤警力'
+            , '应急处突警力' )
+        GROUP BY
+            DATA -> 'marker' ->> 'userData'
+    </select>
+
+
+    <select id="getPostPoliceDataOfScene" resultType="map">
+        SELECT DATA -> 'marker' ->> 'userData'as leixing, COALESCE (SUM ( COALESCE ( CAST ( DATA -> 'info' ->> 'num' AS INT ), 0 ) ), 0) AS num
+        FROM
+            draw_data
+        WHERE
+            delete_flag = 0
+          AND scene_id = #{sceneId}
+          AND police_type IN ( '执勤警力'
+            , '应急处突警力' )
+        GROUP BY
+            DATA -> 'marker' ->> 'userData'
+    </select>
+
+    <select id="getDrawDataList" resultType="com.xaxc.teqin.model.entity.DrawData">
+        select d.id,d.name,st_astext(d.geom) as geom, st_asgeojson(st_asewkt(d.geom)) as geojson,data -> 'info' ->>
+        'buildName' as buildName,COALESCE(d.data -> 'info' ->> 'fangxian','') as fangxian,
+        CASE
+        WHEN d.DATA -> 'info' ->> 'num' = '' THEN
+        '1'
+        ELSE
+        COALESCE (d.DATA -> 'info' ->> 'num' , '1' )
+        END as num,
+        d.data -> 'info' ->> 'featureType' as featureType,
+        d.data -> 'marker' ->> 'userData'as policeDataType,
+        d.data ->>'customStyle' as lineType,
+        d.data -> 'info' ->> 'floorNum' as floorNum, d.data -> 'marker' ->> 'groupId' as groupId,
+        d.data,d.type,d.scene_id,d.task_id, d.plan_node, d.police_type, d.create_time,ST_Length(Geography(d.geom)) as
+        length,
+        case when d.type='lines' then st_asgeojson(ST_LineInterpolatePoint(d.geom,0.5)) else '' end as middlePoint
+        from draw_data d left join scene_info i on d.scene_id = i.id
+        where d.delete_flag = 0
+        <if test="dto.indoorFlag != null and dto.indoorFlag == 1">
+            and d.data -> 'info' ->> 'floorNum' is not null
+        </if>
+        <if test="dto.indoorFlag != null and dto.indoorFlag == 0">
+            and d.data -> 'info' ->> 'floorNum' is null
+        </if>
+        <if test="dto.keyFlag != null and dto.keyFlag != ''">
+            and d.data -> 'info' ->> 'status' = #{dto.keyFlag}
+        </if>
+        <if test="dto.sceneId != null and dto.sceneId != ''">
+            and d.scene_id = #{dto.sceneId}
+        </if>
+        <if test="dto.sceneIdList!=null and !dto.sceneIdList.isEmpty()">
+            and d.scene_id in
+            <foreach collection="dto.sceneIdList" item="sceneId" index="i" open="(" close=")" separator=",">
+                #{sceneId}
+            </foreach>
+        </if>
+        <if test="dto.typeList!=null and !dto.typeList.isEmpty()">
+            and d.type in
+            <foreach collection="dto.typeList" item="type" index="i" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+        </if>
+
+        <if test="dto.taskId != null and dto.taskId != ''">
+            and d.task_id = #{dto.taskId}
+        </if>
+        <if test="dto.type != null and dto.type != ''">
+            and d.type = #{dto.type}
+        </if>
+        <if test="dto.lineType != null and dto.lineType != ''">
+            and d.data ->>'customStyle' = #{dto.lineType}
+        </if>
+        <if test="dto.buildName != null and dto.buildName != ''">
+            and d.data -> 'info' ->> 'buildName' = #{dto.buildName}
+        </if>
+        <if test="dto.floorNum != null and dto.floorNum != ''">
+            and d.data -> 'info' ->> 'floorNum' = #{dto.floorNum}
+        </if>
+        <if test="dto.featureType != null and dto.featureType != ''">
+            and (position( data -> 'info' ->> 'featureType' in #{dto.featureType}) > 0 or data -> 'info' ->>
+            'featureType' LIKE '%'||#{dto.featureType}||'%')
+        </if>
+        <if test="dto.sceneType != null and dto.sceneType != ''">
+            and i.type = #{dto.sceneType}
+        </if>
+        order by d.create_time asc
+    </select>
+
+    <select id="getLineList" resultType="com.xaxc.teqin.model.entity.DrawData">
+        select d.id,d.name,st_astext(d.geom) as geom, st_asgeojson(st_asewkt(d.geom)) as geojson,data -> 'info' ->>
+        'buildName' as buildName,COALESCE(d.data -> 'info' ->> 'fangxian','') as fangxian,
+        CASE
+        WHEN d.DATA -> 'info' ->> 'num' = '' THEN
+        '1'
+        ELSE
+        COALESCE (d.DATA -> 'info' ->> 'num' , '1' )
+        END as num,
+        d.data -> 'info' ->> 'featureType' as featureType,
+        d.data -> 'marker' ->> 'userData'as policeDataType,
+        d.data ->>'customStyle' as lineType,
+        d.data -> 'info' ->> 'floorNum' as floorNum, d.data -> 'marker' ->> 'groupId' as groupId,
+        d.data,d.type,d.scene_id,d.task_id, d.plan_node, d.police_type, d.create_time,ST_Length(Geography(d.geom)) as
+        length,
+        case when d.type='lines' then st_asgeojson(ST_LineInterpolatePoint(d.geom,0.5)) else '' end as middlePoint
+        ,i.scene_name as sceneName
+        from draw_data d left join scene_info i on d.scene_id = i.id
+        where d.delete_flag = 0
+        <if test="dto.indoorFlag != null and dto.indoorFlag == 1">
+            and d.data -> 'info' ->> 'floorNum' is not null
+        </if>
+        <if test="dto.indoorFlag != null and dto.indoorFlag == 0">
+            and d.data -> 'info' ->> 'floorNum' is null
+        </if>
+        <if test="dto.keyFlag != null and dto.keyFlag != ''">
+            and d.data -> 'info' ->> 'status' = #{dto.keyFlag}
+        </if>
+        <if test="dto.sceneId != null and dto.sceneId != ''">
+            and d.scene_id = #{dto.sceneId}
+        </if>
+        <if test="dto.sceneIdList!=null and !dto.sceneIdList.isEmpty()">
+            and d.scene_id in
+            <foreach collection="dto.sceneIdList" item="sceneId" index="i" open="(" close=")" separator=",">
+                #{sceneId}
+            </foreach>
+        </if>
+        <if test="dto.typeList!=null and !dto.typeList.isEmpty()">
+            and d.type in
+            <foreach collection="dto.typeList" item="type" index="i" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+        </if>
+
+        <if test="dto.taskId != null and dto.taskId != ''">
+            and d.task_id = #{dto.taskId}
+        </if>
+        <if test="dto.type != null and dto.type != ''">
+            and d.type = #{dto.type}
+        </if>
+        <if test="dto.lineType != null and dto.lineType != ''">
+            and d.data ->>'customStyle' = #{dto.lineType}
+        </if>
+        <if test="dto.buildName != null and dto.buildName != ''">
+            and d.data -> 'info' ->> 'buildName' = #{dto.buildName}
+        </if>
+        <if test="dto.floorNum != null and dto.floorNum != ''">
+            and d.data -> 'info' ->> 'floorNum' = #{dto.floorNum}
+        </if>
+        <if test="dto.featureType != null and dto.featureType != ''">
+            and (position( data -> 'info' ->> 'featureType' in #{dto.featureType}) > 0 or data -> 'info' ->>
+            'featureType' LIKE '%'||#{dto.featureType}||'%')
+        </if>
+        <if test="dto.sceneType != null and dto.sceneType != ''">
+            and i.type = #{dto.sceneType}
+        </if>
+        order by d.sort, d.create_time asc
+    </select>
+
+    <select id="getDrawDataListOfBuilding" resultType="com.xaxc.teqin.model.entity.DrawData">
+        select d.id,d.name,st_astext(d.geom) as geom, st_asgeojson(st_asewkt(d.geom)) as geojson,data -> 'info' ->>
+        'buildName' as buildName,
+        data -> 'info' ->> 'floorNum' as floorNum,
+        d.data,d.type,d.scene_id,d.task_id, d.plan_node, d.police_type, d.create_time,ST_Length(Geography(d.geom)) as
+        length from draw_data d
+        left join scene_info i on d.scene_id = i.id
+        where d.delete_flag = 0
+        <if test="buildName != null and buildName != ''">
+            and d.data -> 'info' ->> 'buildName' = #{buildName}
+        </if>
+
+    </select>
+
+    <select id="getLineInterpolatePoint" resultType="string">
+        SELECT st_asgeojson(ST_LineInterpolatePoint(st_makeline(array_agg(st_astext(geom))), 0.5))
+        from (SELECT d.geom
+              FROM draw_data d
+              WHERE d.delete_flag = 0
+                AND d.scene_id = #{sceneId}
+                AND d.DATA ->> 'customStyle' = '0'
+              ORDER BY
+                  d.create_time ASC) t
+    </select>
+    <select id="getPoliceGroup" resultType="string" parameterType="string">
+        select distinct data -> 'info' ->> 'group' from draw_data
+        where delete_flag = 0
+            and data -> 'info' ->> 'group' is not null
+            and data -> 'info' ->> 'group' != ''
+            and scene_id = #{sceneId}
+    </select>
+</mapper>

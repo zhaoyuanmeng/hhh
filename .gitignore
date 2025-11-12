@@ -1,0 +1,9 @@
+HELP.md
+target/
+!**/src/main/**/target/
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/logs/

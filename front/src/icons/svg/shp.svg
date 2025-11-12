@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="81px" height="70px" viewBox="0 0 81 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 8</title>
+    <g id="场景组装" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="场景组装-第二步数据选择（SHP成功）" transform="translate(-797.000000, -870.000000)">
+            <g id="编组-8" transform="translate(797.000000, 870.000000)">
+                <rect id="矩形" stroke="#7A158A" x="1" y="1" width="68" height="68" rx="7"></rect>
+                <rect id="矩形" stroke="#7A158A" stroke-width="2" x="8" y="20" width="52" height="36" rx="2"></rect>
+                <rect id="矩形" fill="#7A158A" x="29" y="8" width="52" height="24" rx="2"></rect>
+                <text id="SHP" font-family="PingFangSC-Semibold, PingFang SC" font-size="16" font-weight="500" letter-spacing="1" fill="#FFFFFF">
+                    <tspan x="38" y="26">SHP</tspan>
+                </text>
+                <circle id="椭圆形备份-4" stroke="#7A158A" stroke-width="2" fill="#FFFFFF" cx="60" cy="40" r="3"></circle>
+                <line x1="11" y1="40" x2="57" y2="40" id="路径-17" stroke="#7A158A" stroke-width="2"></line>
+                <circle id="椭圆形备份-5" stroke="#7A158A" stroke-width="2" fill="#FFFFFF" cx="42" cy="57" r="3"></circle>
+                <circle id="椭圆形备份-6" stroke="#7A158A" stroke-width="2" fill="#FFFFFF" cx="21" cy="20" r="3"></circle>
+                <circle id="椭圆形备份-7" stroke="#7A158A" stroke-width="2" fill="#FFFFFF" cx="8" cy="40" r="3"></circle>
+                <line x1="42" y1="54" x2="42" y2="40" id="路径-19" stroke="#7A158A" stroke-width="2" fill="#FFFFFF"></line>
+                <line x1="21" y1="40" x2="21" y2="22" id="路径-19备份" stroke="#7A158A" stroke-width="2"></line>
+            </g>
+        </g>
+    </g>
+</svg>

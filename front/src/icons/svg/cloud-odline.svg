@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ODLine</title>
+    <defs>
+        <linearGradient x1="91.322314%" y1="-3.05197419%" x2="15.4131994%" y2="96.0602496%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" stop-opacity="0.18173986" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="资源库" transform="translate(-180.000000, -663.000000)">
+            <g id="ODLine" transform="translate(180.000000, 662.135368)">
+                <path d="M3.14728605,19.5197349 L21.5604049,1.16880472 C21.7840694,0.944874263 22.1495417,0.94373756 22.3766649,1.16539461 C22.5876474,1.37000111 22.6037881,1.69623482 22.4250871,1.92130198 L6.24976573,22.2182674 C5.54303215,23.1060323 4.24024433,23.2606239 3.33982195,22.563825 C2.44055248,21.8658895 2.28375677,20.582552 2.99049035,19.6936504 C3.04006546,19.6334052 3.0930993,19.5742966 3.14728605,19.5197349" id="Fill-1" fill="url(#linearGradient-1)"></path>
+                <circle id="椭圆形" fill="#FFFFFF" cx="3" cy="21.8646319" r="3"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

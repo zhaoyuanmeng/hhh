@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>测量</title>
+    <g id="页面-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="测量-坐标" transform="translate(-106.000000, -212.000000)">
+            <g id="测量" transform="translate(118.000000, 224.000000) rotate(-360.000000) translate(-118.000000, -224.000000) translate(106.000000, 211.000000)">
+                <rect id="矩形" x="0" y="0.6" width="24" height="24" rx="1"></rect>
+                <g id="编组-11" transform="translate(0.600000, 1.600000)">
+                    <rect id="矩形" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" transform="translate(8.950255, 9.351353) rotate(-45.000000) translate(-8.950255, -9.351353) " x="-0.0497453337" y="6.35135258" width="18" height="6"></rect>
+                    <rect id="矩形备份-14" fill="#FFFFFF" transform="translate(20.900000, 8.000000) rotate(-45.000000) translate(-20.900000, -8.000000) " x="20" y="6" width="1.8" height="4"></rect>
+                    <rect id="矩形备份-15" fill="#FFFFFF" transform="translate(7.900000, 21.000000) rotate(-45.000000) translate(-7.900000, -21.000000) " x="7" y="19" width="1.8" height="4"></rect>
+                    <rect id="矩形" fill="#FFFFFF" transform="translate(14.783536, 14.630631) rotate(-45.000000) translate(-14.783536, -14.630631) " x="5.28353615" y="13.6306308" width="19" height="2" rx="1"></rect>
+                    <line x1="11.4" y1="11" x2="9.30380806" y2="8.90380806" id="路径-6" stroke="#FFFFFF" stroke-width="2"></line>
+                    <line x1="15.4" y1="8" x2="13.3038081" y2="5.90380806" id="路径-6备份" stroke="#FFFFFF" stroke-width="2"></line>
+                    <line x1="8.4" y1="15" x2="6.30380806" y2="12.9038081" id="路径-6备份-2" stroke="#FFFFFF" stroke-width="2"></line>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

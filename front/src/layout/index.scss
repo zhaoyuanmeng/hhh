@@ -1,0 +1,110 @@
+.dataScreen-container {
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  .dataScreen-content {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    .dataScreen-header {
+      width: 100%;
+      height: 60px;
+      background: url("./images/h_bg.png") no-repeat;
+      background-size: 100% 100%;
+      position: absolute;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      .header-lf{
+        width: 517px;
+        height: 60px;
+        span{
+          font-family: YouSheBiaoTiHei;
+          font-size: 30px;
+          color: #FFFFFF;
+          line-height: 39px;
+          text-align: left;
+          font-style: normal;
+        }
+      }
+      .header-ct{
+        flex: 1;
+        .menuList{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 54px;
+          .menu_item{
+            flex: 1;
+            text-align: center;
+            .link_text{
+              font-family: YouSheBiaoTiHei;
+              font-size: 18px;
+              color: #FFFFFF;
+              font-style: normal;
+            }
+          }
+          .menu-active{
+            background: url("./images/nav_bg.png") no-repeat;
+            background-size: 100% 100%;
+          }
+          .menu_item:hover{
+            background: url("./images/nav_bg_hover.png") no-repeat;
+            background-size: 100% 100%;
+          }
+          .menu-active:hover{
+            background: url("./images/nav_bg.png") no-repeat;
+            background-size: 100% 100%;
+          }
+        }
+      }
+      .header-ri{
+        width: 33%;
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        .h_right_text{
+          font-family: pingfangSc;
+          font-weight: 500;
+          font-size: 12px;
+          color: #FFFFFF;
+          line-height: 20px;
+          text-align: left;
+          font-style: normal;
+          padding-left: 4px;
+        }
+        .h_left{
+          display: flex;
+          align-items: center;
+        }
+        .h_center{
+          color: #fff;
+          padding: 0 30px;
+          .h_center_top{
+            display:flex;
+            justify-content: space-between;
+            .week{
+              padding-right: 10px;
+            }
+          }
+        }
+        .h_right{
+          color: #fff;
+          display:flex;
+          align-items: center;
+          margin-right: 10px;
+        }
+        .heard_span{
+          margin-left: 4px;
+        }
+      }
+    }
+    .dataScreen-main {
+      box-sizing: border-box;
+      display: flex;
+      flex: 1;
+      width: 100%;
+    }
+  }
+}

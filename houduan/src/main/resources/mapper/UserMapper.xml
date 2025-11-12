@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xaxc.teqin.mapper.UserMapper">
+    <select id="selectUserByUserName" resultType="com.xaxc.teqin.model.dto.UserDTO" parameterType="String">
+		SELECT
+			u.id as id ,
+			u.real_name as realName ,
+			u.user_name as userName ,
+			u.password as password ,
+			u.phone as phone ,
+			u.role_id as roleId ,
+			u.sex as sex ,
+			u.org_id as orgId ,
+			u.status as status ,
+			u.create_time as createTime ,
+			u.update_time as updateTime,
+			o.short_name as orgShortName,
+			o.full_name as orgFullName,
+			r.role_name as roleName,
+			r.role_code  as roleCode,
+			r.resources
+		FROM
+			sys_user u
+				LEFT JOIN sys_org o ON u.org_id = o.ID
+			    LEFT JOIN sys_role r ON u.role_id = r.ID
+		where u.delete_flag = 0 and u.user_name = #{userName}
+	</select>
+
+	<select id="selectUserList" resultType="com.xaxc.teqin.model.dto.UserDTO" parameterType="com.xaxc.teqin.model.dto.UserDTO">
+		SELECT
+			u.id as id ,
+			u.real_name as realName ,
+			u.user_name as userName ,
+			u.password as password ,
+			u.phone as phone ,
+			u.sex as sex ,
+			u.status as status ,
+			u.create_time as createTime ,
+			u.update_time as updateTime,
+			u.role_id as roleId ,
+			u.org_id as orgId ,
+			o.short_name as orgShortName,
+			o.full_name as orgFullName,
+			r.role_name as roleName,
+			r.role_code  as roleCode,
+			r.resources
+		FROM
+			sys_user u
+			LEFT JOIN sys_org o ON u.org_id = o.ID
+			LEFT JOIN sys_role r ON u.role_id = r.ID
+		<where>
+			u.delete_flag = 0
+			<if test="dto.id != null and '' != dto.id">
+				AND u.id = #{dto.id}
+			</if>
+			<if test="dto.keyword != null and '' != dto.keyword">
+				and (r.role_name like concat(concat('%',#{dto.keyword}),'%')
+				or u.real_name like concat(concat('%',#{dto.keyword}),'%')
+				or u.phone like concat(concat('%',#{dto.keyword}),'%'))
+			</if>
+		</where>
+		order by u.create_time desc
+	</select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56px" height="56px" viewBox="0 0 56 56" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 31</title>
+    <g id="CIM一张图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="数据演示-按键交互" transform="translate(-318.000000, -985.000000)">
+            <g id="旋转" transform="translate(317.995501, 985.000000)">
+                <g id="编组-31" transform="translate(0.004499, 0.000000)">
+                    <g id="编组-7备份-2" transform="translate(28.000000, 28.000000) scale(-1, 1) translate(-28.000000, -28.000000) ">
+                        <path d="M42.7110508,28 C42.7110508,23.0294373 38.6816135,19 33.7110508,19 C31.2331036,19 28.9890512,20.0014226 27.3615249,21.6216363" id="路径" stroke="#FFFFFF" stroke-width="2"></path>
+                        <path d="M39.7110508,37 C39.7110508,32.0294373 35.6816135,28 30.7110508,28 C28.2331036,28 25.9890512,29.0014226 24.3615249,30.6216363" id="路径备份-2" stroke="#FFFFFF" stroke-width="2" transform="translate(32.036288, 32.500000) scale(-1, -1) translate(-32.036288, -32.500000) "></path>
+                        <polygon id="三角形" fill="#FFFFFF" transform="translate(25.004499, 22.927399) rotate(-135.000000) translate(-25.004499, -22.927399) " points="25.0044994 19.9273993 29.0044994 25.9273993 21.0044994 25.9273993"></polygon>
+                        <polygon id="三角形备份-2" fill="#FFFFFF" transform="translate(41.004499, 32.927399) scale(-1, -1) rotate(-135.000000) translate(-41.004499, -32.927399) " points="41.0044994 29.9273993 45.0044994 35.9273993 37.0044994 35.9273993"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

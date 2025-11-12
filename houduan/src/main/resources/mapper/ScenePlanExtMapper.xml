@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaxc.teqin.mapper.ScenePlanExtMapper">
+
+    <select id="getScenePlanNodeExt" resultType="com.xaxc.teqin.model.entity.ScenePlanExt">
+        SELECT *
+        FROM scene_plan_ext
+        WHERE scene_id = #{sceneId} AND plan_node = #{planNode}
+        ORDER BY CASE
+
+                     WHEN DATA ->> 'fangxian' = '一道防线' THEN
+                         1
+                     WHEN DATA ->> 'fangxian' = '二道防线' THEN
+                         2
+                     WHEN DATA ->> 'fangxian' = '三道防线' THEN
+                         3
+                     ELSE 4
+                     END;
+    </select>
+
+    <select id="getScenePlanNodeExtOfLine" resultType="com.xaxc.teqin.model.entity.ScenePlanExt">
+        SELECT *
+        FROM scene_plan_ext
+        WHERE scene_id = #{sceneId} AND plan_node = #{planNode}
+        <if test="fangxian!=null and fangxian!=''">
+            and DATA ->> 'fangxian' = #{fangxian}
+        </if>
+        <if test="fangxian==null or fangxian==''">
+            and DATA ->> 'fangxian' is null
+        </if>
+
+    </select>
+</mapper>

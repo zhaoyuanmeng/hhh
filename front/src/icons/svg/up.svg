@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56px" height="59px" viewBox="0 0 56 59" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>抬头</title>
+    <g id="CIM一张图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="数据演示-按键交互" transform="translate(-344.000000, -921.000000)">
+            <g id="抬头" transform="translate(344.000000, 921.000000)">
+                <g id="编组" transform="translate(13.000000, 13.000000)">
+                    <path d="M9.19657021,5.37332761 L5.55072129,12.3613181 C3.69240103,15.9231564 5.07337525,20.317063 8.63521353,22.1753833 C9.67400057,22.7173503 10.8283316,23.0003732 12,23.0003732 L12,23.0003732 L12,23.0003732" id="路径-45" stroke="#FFFFFF" stroke-width="2"></path>
+                    <polygon id="路径" fill="#FFFFFF" fill-rule="nonzero" points="6.82690753 8.47051265 3 6.44833443 11.8 0 11.6128373 11 7.78433425 8.97673422"></polygon>
+                    <line x1="12" y1="23.0003732" x2="0" y2="23.0003732" id="路径-46" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="2" transform="translate(6.000000, 23.000373) scale(-1, 1) translate(-6.000000, -23.000373) "></line>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

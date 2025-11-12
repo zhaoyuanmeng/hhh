@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>历史</title>
+    <g id="CIM一张图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="数据演示-按键交互" transform="translate(-1528.000000, -194.000000)">
+            <g id="历史" transform="translate(1528.000000, 194.000000)">
+                <rect id="矩形" x="0" y="0" width="24" height="24" rx="6"></rect>
+                <g id="编组-23" transform="translate(3.000000, 1.200000)">
+                    <g id="编组-22">
+                        <rect id="矩形" stroke="currentColor" stroke-linejoin="round" x="0" y="3" width="6" height="14.4"></rect>
+                        <polyline id="路径" stroke="currentColor" stroke-linejoin="round" points="4.8 1.2 4.8 3 1.2 3 1.2 1.2"></polyline>
+                        <polyline id="路径备份" stroke="currentColor" stroke-linejoin="round" transform="translate(3.000000, 18.300000) scale(1, -1) translate(-3.000000, -18.300000) " points="4.8 17.4 4.8 19.2 1.2 19.2 1.2 17.4"></polyline>
+                        <rect id="矩形" fill="#FFFFFF" x="1.8" y="0" width="2.4" height="1.2"></rect>
+                        <rect id="矩形备份-12" fill="#FFFFFF" transform="translate(3.000000, 19.800000) scale(1, -1) translate(-3.000000, -19.800000) " x="1.8" y="19.2" width="2.4" height="1.2"></rect>
+                        <rect id="矩形备份-11" stroke="currentColor" stroke-linejoin="round" x="6" y="4.2" width="14" height="12"></rect>
+                    </g>
+                    <polyline id="路径-33" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" points="7.8 12.2660651 9.31314939 10.1255349 10.2 11.0123856 11.9880581 9.2243275 15.0297957 12.2660651"></polyline>
+                    <circle id="椭圆形" stroke="currentColor" stroke-width="0.5" stroke-linejoin="round" cx="14.1" cy="7.5" r="1"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

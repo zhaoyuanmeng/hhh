@@ -1,0 +1,139 @@
+{
+  "重点人员登记表": {
+    "hl":{"3": [1,3,5],"4": [1,3,5],"5": [1,3],"6": [1],"7": [1,3,6],"8": [1],"12": [1],"20": [1]},
+    "ziduan": {
+      "3": ["xingming","xingbie","chushengriqi"],
+      "4": ["cengyongming","wenhuachengdu","lianxidianhua"],
+      "5": ["zhengzhimianmao","shenfenzhenghao"],
+      "6": ["xianzhuzhi"],
+      "7": ["jianguanren","danwei","lianxifangshi"],
+      "8": ["xianshibiaoxian"],
+      "12": ["lieweigongzuoduixiangshiyou"],
+      "20": ["guankongcuoshi"]
+    },
+    "biaochang": 23,
+    "starthang": 2,
+    "startlie": 0
+  },
+  "涉恐重点人员登记表": {
+    "hl":{"3": [1,3,5],"4": [1,3,5],"5": [1,3],"6": [1],"7": [1,3,6],"8": [1],"12": [1],"20": [1]},
+    "ziduan": {
+      "3": ["xingming","xingbie","chushengriqi"],
+      "4": ["cengyongming","wenhuachengdu","lianxidianhua"],
+      "5": ["zhengzhimianmao","shenfenzhenghao"],
+      "6": ["xianzhuzhi"],
+      "7": ["jianguanren","danwei","lianxifangshi"],
+      "8": ["xianshibiaoxian"],
+      "12": ["lieweigongzuoduixiangshiyou"],
+      "20": ["guankongcuoshi"]
+    },
+    "biaochang": 23,
+    "starthang": 2,
+    "startlie": 0
+  },
+  "沿线常住外籍人员基本情况登记表": {
+    "hl":{"3": [1,3,5],"4": [1,3,5],"5": [1,3],"6": [1,5],"7": [1,5],"8": [1,5],"9": [1],"10": [1],"14": [1]},
+    "ziduan": {
+      "3": ["zhongwenxingming","waiwenxingming","chushengriqi"],
+      "4": ["guoji","xingbie","rujingshijian"],
+      "5": ["ruzhushijian","laihuashiyou"],
+      "6": ["qianzhengzhonglei","qianzhenghaoma"],
+      "7": ["qianzhengdanwei","qianzhengyouxiaoqi"],
+      "8": ["jiedaidanwei","nilikaishijian"],
+      "9": ["zhuzhi"],
+      "10": ["richangbiaoxian"],
+      "14": ["guanlicuoshi"]
+    },
+    "biaochang": 17,
+    "starthang": 2,
+    "startlie": 0
+  },
+  "周边常住外籍人员基本情况登记表": {
+    "hl":{"3": [1,3,5],"4": [1,3,5],"5": [1,3],"6": [1,5],"7": [1,5],"8": [1,5],"9": [1],"10": [1],"14": [1]},
+    "ziduan": {
+      "3": ["zhongwenxingming","waiwenxingming","chushengriqi"],
+      "4": ["guoji","xingbie","rujingshijian"],
+      "5": ["ruzhushijian","laihuashiyou"],
+      "6": ["qianzhengzhonglei","qianzhenghaoma"],
+      "7": ["qianzhengdanwei","qianzhengyouxiaoqi"],
+      "8": ["jiedaidanwei","nilikaishijian"],
+      "9": ["zhuzhi"],
+      "10": ["richangbiaoxian"],
+      "14": ["guanlicuoshi"]
+    },
+    "biaochang": 17,
+    "starthang": 2,
+    "startlie": 0
+  },
+  "重点部位登记表": {
+    "hl":{"3": [1,3],"4": [1,3],"5": [1],"12": [1],"19": [1]},
+    "ziduan": {
+      "3": ["mingcheng","suochuweizhi"],
+      "4": ["fuzeren","dianhua"],
+      "5": ["jibenqingkuang"],
+      "12": ["cunzaiwenti"],
+      "19": ["beizhu"]
+    },
+    "biaochang": 21,
+    "starthang": 2,
+    "startlie": 0
+  },
+  "人 员 政 审 表": {
+    "hl":{"2": [1,5,8],"3": [1,5,8],"4": [1,5,8],"6": [1,5,10],"8": [1,7],"10": [1],"11": [1],"14": [1,2,4,6,7],
+      "15": [1,2,4,6,7],"16": [1,2,4,6,7],"17": [1,2,4,6,7],"18": [1],"22": [1,8],"23": [1,8],"24": [1,8]},
+    "ziduan": {
+      "2": ["xingming","xingbie","chushengnianyue"],
+      "3": ["cengyongming","minzu","wenhuahcengdu"],
+      "4": ["zhengzhimianmao","canjiagongzuoshijian","shenfenzhenghaoma"],
+      "6": ["gongzuobumen","zhiwu","shoujihaoma"],
+      "8": ["jiguan","hujisuozaidi"],
+      "10": ["xianzhuzhi"],
+      "11": ["benrenjianli"],
+      "14": ["guanxi","xingming","nianling","zhengzhimianmao","gongzuodanwei"],
+      "15": ["guanxi","xingming","nianling","zhengzhimianmao","gongzuodanwei"],
+      "16": ["guanxi","xingming","nianling","zhengzhimianmao","gongzuodanwei"],
+      "17": ["guanxi","xingming","nianling","zhengzhimianmao","gongzuodanwei"],
+      "18": ["zhengshenqingkuang"],
+      "22": ["danweiyijian","ercihechaduibiqingkuang"],
+      "23": ["danweiyijian","ercihechaduibiqingkuang"],
+      "24": ["danweiyijian","ercihechaduibiqingkuang"]
+    },
+    "guanxizhuyaochengyuan": ["guanxi","xingming","nianling","zhengzhimianmao","gongzuodanwei"],
+    "biaochang": 27,
+    "starthang": 1,
+    "startlie": 0
+  },
+  "基本情况登记表": {
+    "hl":{"1": [0],"3": [1,7],"4": [1,7],"5": [1,7,10],"6": [1,7,10],"7": [10],"9": [1,3,6,7],"10": [1,3,6,7],"11": [1,3,6,7],"12": [1,3,6,7],"15": [1,2,3,4,5,6,7,8,9,10,12],"16": [1,2,3,4,5,6,7,8,9,10,12],"17": [1,2,3,4,5,6,7,8,9,10,12],"18": [1,2,3,4,5,6,7,8,9,10,12],"22": [1,4,7,9,10],"23": [1,4,7,9,10],"24": [1,4,7,9,10],"25": [1,4,7,9,10],"27": [2,7,9],"28": [2,7,9],"29": [2,7,9],"30": [2,7,9],"33": [1,7],"34": [1,7],"35": [1,7]},
+    "ziduan": {
+      "1": ["title"],
+      "3": ["mingcheng","guanxiapaichusuo"],
+      "4": ["danweixingzhi","lishuguanxi"],
+      "5": ["faren","lianxidianhuafr","zongrenshu"],
+      "6": ["dizhi","zhandimianji","jingdu"],
+      "7": ["weidu"],
+      "9": ["mingchengnj1","renshu1","fuzerennsjg1","lianxidianhuansjg1"],
+      "10": ["mingchengnj2","renshu2","fuzerennsjg2","lianxidianhuansjg2"],
+      "11": ["mingchengnj3","renshu3","fuzerennsjg3","lianxidianhuansjg3"],
+      "12": ["mingchengnj4","renshu4","fuzerennsjg4","lianxidianhuansjg4"],
+      "15": ["mingchengjz1","jianzhumianji1","cengshu1","kefang1","rongnarenshu1","mingchenggbxxs1","zuoweigbxxs1","mingchenghys1","zuoweihys1","mingchengct1","zuoweict1"],
+      "16": ["mingchengjz2","jianzhumianji2","cengshu2","kefang2","rongnarenshu2","mingchenggbxxs2","zuoweigbxxs2","mingchenghys2","zuoweihys2","mingchengct2","zuoweict2"],
+      "17": ["mingchengjz3","jianzhumianji3","cengshu3","kefang3","rongnarenshu3","mingchenggbxxs3","zuoweigbxxs3","mingchenghys3","zuoweihys3","mingchengct3","zuoweict3"],
+      "18": ["mingchengjz4","jianzhumianji4","cengshu4","kefang4","rongnarenshu4","mingchenggbxxs4","zuoweigbxxs4","mingchenghys4","zuoweihys4","mingchengct4","zuoweict4"],
+      "22": ["mingchengzybw1","suochuweizhi1","anquansheshi1","fuzerenzybw1","lianxidianhuazybw1"],
+      "23": ["mingchengzybw2","suochuweizhi2","anquansheshi2","fuzerenzybw2","lianxidianhuazybw2"],
+      "24": ["mingchengzybw3","suochuweizhi3","anquansheshi3","fuzerenzybw3","lianxidianhuazybw3"],
+      "25": ["mingchengzybw4","suochuweizhi4","anquansheshi4","fuzerenzybw4","lianxidianhuazybw4"],
+      "27": ["mingchengslqk1","zhigaodian1","zhongdianren1"],
+      "28": ["mingchengslqk2","zhigaodian2","zhongdianren2"],
+      "29": ["mingchengslqk3","zhigaodian3","zhongdianren3"],
+      "30": ["mingchengslqk4","zhigaodian4","zhongdianren4"],
+      "33": ["mingchengtcc1","chewei1"],
+      "34": ["mingchengtcc2","chewei2"],
+      "35": ["mingchengtcc3","chewei3"]
+    },
+    "biaochang": 36,
+    "starthang": 0,
+    "startlie": 0
+  }
+}
