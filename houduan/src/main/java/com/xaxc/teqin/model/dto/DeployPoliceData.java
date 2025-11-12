@@ -16,7 +16,7 @@ public class DeployPoliceData implements Serializable {
     private String sceneId;
     @NonNull
     private String basicDataId;
-
+    private String id; // 新增:用于更新操作
     private List<JSONObject> policeData;
 
 }

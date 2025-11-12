@@ -390,7 +390,8 @@ public class TaskController {
      */
     @PostMapping("/uploadArchives")
     public ResponseResult uploadArchives(@RequestParam("file") MultipartFile file, @RequestParam("businessId") String businessId) {
-        taskService.uploadArchives(file, businessId);
+        String fileName = file.getOriginalFilename().split("\\.")[0];
+        taskService.uploadArchives(file, businessId ,fileName);
         return ResponseResult.success();
     }
 

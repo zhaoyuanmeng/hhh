@@ -784,7 +784,6 @@ const groupFrom = ref({
   ids: "",
   groupDesc: "",
 });
-
 // 一键部警信息
 const openOnePolice = ref(false);
 const policeList = ref([
@@ -841,29 +840,106 @@ const validatePositiveInteger = (event, index) => {
   }
 };
 // 一键部警
-const deployment = (item) => {
-  console.log(item);
-  openOnePolice.value = true;
-  getGSGtBasicList({ id: screenInfo.value.basicDataId }).then((res) => {
-    console.log(res);
-    gsgtBasicList.value = res.data;
-    if (res.data?.length) {
-      let arrs = [];
-      res.data.forEach((element) => {
-        let obj = {
-          featureTypeId: element.typeid,
-          featureTypName: element.typename,
-          userData: "",
-          num: "",
-        };
-        arrs.push(obj);
-      });
-      savePoliceData.value = arrs;
-    } else {
-      savePoliceData.value = [];
-    }
-  });
+// const deployment = (item) => {
+//   console.log(item);
+//   openOnePolice.value = true;
+//   getGSGtBasicList({ id: screenInfo.value.basicDataId }).then((res) => {
+//     console.log(res);
+//     gsgtBasicList.value = res.data;
+//     if (res.data?.length) {
+//       let arrs = [];
+//       res.data.forEach((element) => {
+//         let obj = {
+//           featureTypeId: element.typeid,
+//           featureTypName: element.typename,
+//           userData: "",
+//           num: "",
+//         };
+//         arrs.push(obj);
+//       });
+//       savePoliceData.value = arrs;
+//     } else {
+//       savePoliceData.value = [];
+//     }
+//   });
+// };
+// AI
+// 一键部警  
+const deployment = (item) => {  
+  console.log(item);  
+  openOnePolice.value = true;  
+    
+  let params = { sceneId: screenInfo.value.id, planNode: "警力部署" };  
+  searchNodePlanToScreen(params).then((res) => {  
+    getGSGtBasicList({ id: screenInfo.value.basicDataId }).then((basicRes) => {  
+      gsgtBasicList.value = basicRes.data;  
+        
+      if (res.data && res.data.length > 0 && res.data[0].extDataList && res.data[0].extDataList.length > 0) {  
+        // 已有数据,需要回显  
+        policArr.value = res.data;  
+        updateNodeId.value = res.data[0].extDataList[0].id;  // 注意:ID在extDataList[0]中  
+          
+        // 创建Map存储已保存的数据  
+        const savedDataMap = new Map();  
+          
+        // 从 extDataList[0].data.features 中提取完整数据  
+        const extData = res.data[0].extDataList[0];  
+        if (extData.data && extData.data.features) {  
+          extData.data.features.forEach(feature => {  
+            savedDataMap.set(feature.featureTypeId, {  
+              userData: feature.userData,  
+              num: feature.num  
+            });  
+          });  
+        }  
+          
+        // 基于基础列表创建完整表单,合并已保存数据  
+        if (basicRes.data?.length) {  
+          let arrs = [];  
+          basicRes.data.forEach((element) => {  
+            const savedData = savedDataMap.get(element.typeid);  
+            let obj = {  
+              featureTypeId: element.typeid,  
+              featureTypName: element.typename,  
+              userData: savedData ? savedData.userData : "",  
+              num: savedData ? savedData.num : "",  
+            };  
+            arrs.push(obj);  
+          });  
+          savePoliceData.value = arrs;  
+        } else {  
+          savePoliceData.value = [];  
+        }  
+      } else {  
+        // 无数据,初始化基础列表  
+        updateNodeId.value = null;  
+        initBasicList(basicRes.data);  
+      }  
+    });  
+  });  
+};  
+  
+// 初始化基础列表的辅助函数  
+const initBasicList = (data) => {  
+  if (data?.length) {  
+    let arrs = [];  
+    data.forEach((element) => {  
+      let obj = {  
+        featureTypeId: element.typeid,  
+        featureTypName: element.typename,  
+        userData: "",  
+        num: "",  
+      };  
+      arrs.push(obj);  
+    });  
+    savePoliceData.value = arrs;  
+  } else {  
+    savePoliceData.value = [];  
+  }  
 };
+
+// end
+
 // 显示隐藏面板
 const showHideCard = (index,idx,bol) => {
   policArr.value[index].extDataList[idx].show = bol
@@ -879,31 +955,61 @@ const addPoliceMarker = () => {
     dataCreat(filteredItems);
   }
 };
-const dataCreat = (arr) => {
-  if (arr?.length) {
-    console.log(arr);
-    let params = {
-      taskId: taskInfo.value.id ? taskInfo.value.id : 'test',
-      sceneId: screenInfo.value.id,
-      basicDataId: screenInfo.value.basicDataId,
-      policeData: getPoliceMarker(arr),
-    };
-    quickToSetPolice(params).then((res) => {
-      // 数据存缓存
-      // let sessions = params.policeData.map(item=>item.drawData)
-      //   setLocalstrong(sessions)
-      if (res.code === 0) {
-        proxy.$modal.msgSuccess("部警成功");
-        activeName.value === "警力部署" && changeActive("警力部署");
-        // 把刚刚绘制的警力id传过去 以及绘制添加的警力图标
-        drawNewPoliceData(res.data);
-        let ids = res.data.map((item) => item.id);
-        emitter.emit("refreshResource", { name: "yjbj", idArr: ids });
-        openOnePolice.value = false;
-      }
-    });
-  }
+// const dataCreat = (arr) => {
+//   if (arr?.length) {
+//     console.log(arr);
+//     let params = {
+//       taskId: taskInfo.value.id ? taskInfo.value.id : 'test',
+//       sceneId: screenInfo.value.id,
+//       basicDataId: screenInfo.value.basicDataId,
+//       policeData: getPoliceMarker(arr),
+//     };
+//     quickToSetPolice(params).then((res) => {
+//       // 数据存缓存
+//       // let sessions = params.policeData.map(item=>item.drawData)
+//       //   setLocalstrong(sessions)
+//       if (res.code === 0) {
+//         proxy.$modal.msgSuccess("部警成功");
+//         activeName.value === "警力部署" && changeActive("警力部署");
+//         // 把刚刚绘制的警力id传过去 以及绘制添加的警力图标
+//         drawNewPoliceData(res.data);
+//         let ids = res.data.map((item) => item.id);
+//         emitter.emit("refreshResource", { name: "yjbj", idArr: ids });
+//         openOnePolice.value = false;
+//       }
+//     });
+//   }
+// };
+
+// AI
+const dataCreat = (arr) => {  
+  if (arr?.length) {  
+    console.log(arr);  
+    let params = {  
+      taskId: taskInfo.value.id ? taskInfo.value.id : 'test',  
+      sceneId: screenInfo.value.id,  
+      basicDataId: screenInfo.value.basicDataId,  
+      policeData: getPoliceMarker(arr),  
+    };  
+      
+    // 如果有updateNodeId,说明是更新操作  
+    if (updateNodeId.value) {  
+      params.id = updateNodeId.value;  
+    }  
+      
+    quickToSetPolice(params).then((res) => {  
+      if (res.code === 0) {  
+        proxy.$modal.msgSuccess(updateNodeId.value ? "更新成功" : "部警成功");  
+        activeName.value === "警力部署" && changeActive("警力部署");  
+        drawNewPoliceData(res.data);  
+        let ids = res.data.map((item) => item.id);  
+        emitter.emit("refreshResource", { name: "yjbj", idArr: ids });  
+        openOnePolice.value = false;  
+      }  
+    });  
+  }  
 };
+// end
 // 绘制刚刚部署的警力
 const drawNewPoliceData = async (arrs) => {
   console.log(arrs);
@@ -1100,7 +1206,10 @@ const getPoliceMarker = (arr) => {
         type: markerInfo.marker.groupId,
         data: markerInfo,
       },
-      featureTypeId: item.featureTypeId,
+      featureTypeId: item.featureTypeId ?item.featureTypeId:null,
+      featureTypName: item.featureTypName ? item.featureTypName :null,  // 添加这行  
+      userData: item.userData ? item.userData : null,               // 添加这行  
+      num: item.num ? item.num :null,                         // 添加这行  
     };
     list.push(obj);
   }

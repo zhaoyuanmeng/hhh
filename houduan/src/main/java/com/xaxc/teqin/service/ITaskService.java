@@ -169,7 +169,7 @@ public interface ITaskService extends IService<Task> {
      */
     List<Map<String, Object>> getRoadPlanOfTask(String taskId);
 
-    void uploadArchives(MultipartFile file, String businessId);
+    void uploadArchives(MultipartFile file, String businessId, String fileName);
 
     void deleteArchives(String businessId);
 

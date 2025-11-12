@@ -171,9 +171,27 @@ public class SceneInfo extends BaseEntity {
     @TableField(exist = false)
     private String  fileName;
 
-
     @TableField(exist = false)
     private String  fileUrl;
+
+
+    @TableField(value = "start_point_id")
+    private String startPointId;
+
+    @TableField(value = "end_point_id")
+    private String endPointId;
+
+    @TableField(value = "start_type")
+    private String startType;
+
+    @TableField(value = "end_type")
+    private String endType;
+
+    @TableField(value = "start_data", typeHandler = JsonbTypeHandler.class)
+    private JSONObject startData;
+
+    @TableField(value = "end_data", typeHandler = JsonbTypeHandler.class)
+    private JSONObject endData;
 
 
 }

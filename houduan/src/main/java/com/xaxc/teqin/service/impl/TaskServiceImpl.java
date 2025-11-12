@@ -1044,10 +1044,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements IT
     }
 
     @Override
-    public void uploadArchives(MultipartFile file, String businessId) {
+    public void uploadArchives(MultipartFile file, String businessId,String fileName) {
         try {
             String filePath = fileInfoService.uploadFileAndGetFilePath(file);
-            taskArchivesDataService.parseToDb(filePath, businessId);
+            taskArchivesDataService.parseToDb(filePath, businessId,fileName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

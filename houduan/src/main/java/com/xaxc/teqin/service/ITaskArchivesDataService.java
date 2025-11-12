@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface ITaskArchivesDataService extends IService<TaskArchivesData> {
 
-    void parseToDb(String filePath, String businessId) throws IOException ;
+    void parseToDb(String filePath, String businessId,String fileName) throws IOException ;
 
     List<TaskArchivesData> getArchivesData(String businessId);
 

@@ -53,16 +53,31 @@ public class ScenePlanServiceImpl extends ServiceImpl<ScenePlanMapper, ScenePlan
             //查询警力部署节点下是否有数据，如果有取节点数据并关联统计警力数据
             //如果没有则根据警力数据构建节点数据
 
-            List<ScenePlan> scenePlanList = new ArrayList<>();
+//            List<ScenePlan> scenePlanList = new ArrayList<>();
+//
+//            ScenePlan scenePlan = getOne(new LambdaQueryWrapper<ScenePlan>().eq(ScenePlan::getSceneId, sceneId).eq(ScenePlan::getPlanNode, planNode)
+//                    , false);
+//
+//            if (scenePlan == null) {
+//                scenePlan = new ScenePlan();
+//                scenePlan.setSceneId(sceneId);
+//                scenePlan.setPlanNode(planNode);
+//            }
+            // AI
+            List<ScenePlan> scenePlanList = list(new LambdaQueryWrapper<ScenePlan>()
+                    .eq(ScenePlan::getSceneId, sceneId)
+                    .eq(ScenePlan::getPlanNode, planNode));
 
-            ScenePlan scenePlan = getOne(new LambdaQueryWrapper<ScenePlan>().eq(ScenePlan::getSceneId, sceneId).eq(ScenePlan::getPlanNode, planNode)
-                    , false);
-
-            if (scenePlan == null) {
+            ScenePlan scenePlan;
+            if (scenePlanList != null && !scenePlanList.isEmpty()) {
+                scenePlan = scenePlanList.get(0);
+            } else {
                 scenePlan = new ScenePlan();
                 scenePlan.setSceneId(sceneId);
                 scenePlan.setPlanNode(planNode);
             }
+
+            // end
 
             List<ScenePlanExt> scenePlanExtList = new ArrayList<>();
 

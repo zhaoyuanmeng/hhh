@@ -50,6 +50,12 @@ public class SceneInfoController {
     @Autowired
     private ISceneInfoService sceneInfoService;
 
+    // AI 新增部分
+
+
+
+    // end
+
     @PostMapping("/add")
     public ResponseResult add(@RequestBody SceneInfo scene) {
         Assert.hasText(scene.getSceneName(), "sceneName不能为空");

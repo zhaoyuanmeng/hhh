@@ -172,6 +172,11 @@ public class SceneInfoServiceImpl extends ServiceImpl<SceneInfoMapper, SceneInfo
         }
     }
 
+    // AI   新增
+
+
+    // end
+
     @Override
     public SceneInfoDTO getDetail(String id) {
         SceneInfo sceneInfo = baseMapper.getDetailById(id);
@@ -243,6 +248,22 @@ public class SceneInfoServiceImpl extends ServiceImpl<SceneInfoMapper, SceneInfo
         if (!sceneInfo.getBeginTime().toLocalDate().equals(sceneInfo.getEndTime().toLocalDate())) {
             return ResponseResult.error("当前日程开始结束时间不在同一天");
         }
+        // 获取起点终点的信息数据
+        if (sceneInfo.getStartPointId() != null && sceneInfo.getEndPointId() != null) {
+            if (sceneInfo.getStartPointId().equals(sceneInfo.getEndPointId())) {
+                return ResponseResult.error("起点和终点不能相同");
+            }
+            PointInfo startPoint = pointInfoService.getById(sceneInfo.getStartPointId());
+            PointInfo endPoint = pointInfoService.getById(sceneInfo.getEndPointId());
+            if (startPoint == null || endPoint == null) {
+                return ResponseResult.error("起点或终点不存在");
+            }
+            sceneInfo.setStartData(startPoint.getData());
+            sceneInfo.setEndData(endPoint.getData());
+        }
+
+
+        // 保存基本信息
         boolean successFlag = save(sceneInfo);
         if (!StringUtils.isEmpty(sceneInfo.getSchemeId()) || !StringUtils.isEmpty(sceneInfo.getSourceSceneId())) {
             String sceneId = !StringUtils.isEmpty(sceneInfo.getSchemeId()) ? sceneInfo.getSchemeId() : sceneInfo.getSourceSceneId();
@@ -360,6 +381,32 @@ public class SceneInfoServiceImpl extends ServiceImpl<SceneInfoMapper, SceneInfo
             //清除电子档案
             taskArchivesDataService.remove(new LambdaQueryWrapper<TaskArchivesData>().eq(TaskArchivesData::getBusinessId, sceneInfo.getId()));
         }
+
+        if (sceneInfo.getStartPointId() != null && sceneInfo.getEndPointId() != null) {
+            // 清理旧场景的标识
+            boolean flag = false;
+            if (!sceneInfo.getStartPointId().equals(oldScene.getStartPointId())) {
+                flag = true;
+                PointInfo startPoint = pointInfoService.getById(sceneInfo.getStartPointId());
+                if (startPoint == null ) {
+                    return ResponseResult.error("起点不存在");
+                }
+                sceneInfo.setStartData(startPoint.getData());
+            }
+            if(!sceneInfo.getEndPointId().equals(oldScene.getEndPointId())){
+                flag = true;
+                PointInfo endPoint = pointInfoService.getById(sceneInfo.getEndPointId());
+                if (endPoint == null) {
+                    return ResponseResult.error("终点不存在");
+                }
+                sceneInfo.setEndData(endPoint.getData());
+            }
+            /*if(flag){
+                drawDataService.update(new DrawData().setDeleteFlag(1), new LambdaQueryWrapper<DrawData>().eq(DrawData::getSceneId, sceneInfo.getId()));
+            }*/
+        }
+
+
         //是否选择常备方案
         if (org.springframework.util.StringUtils.hasText(sceneInfo.getSchemeId())) {
             SceneInfo scheme = getById(sceneInfo.getSchemeId());
@@ -373,15 +420,37 @@ public class SceneInfoServiceImpl extends ServiceImpl<SceneInfoMapper, SceneInfo
         return successFlag ? ResponseResult.success() : ResponseResult.error();
     }
 
+//    @Override
+//    public boolean deleteScene(String id) {
+//        boolean successFlag = update(new SceneInfo().setDeleteFlag(1), new LambdaQueryWrapper<SceneInfo>().eq(SceneInfo::getId, id));
+//        if (successFlag) {
+//            drawDataService.update(new DrawData().setDeleteFlag(1), new LambdaQueryWrapper<DrawData>().eq(DrawData::getSceneId, id));
+//        }
+//        return successFlag;
+//    }
+
+//    AI
+
     @Override
     public boolean deleteScene(String id) {
-        boolean successFlag = update(new SceneInfo().setDeleteFlag(1), new LambdaQueryWrapper<SceneInfo>().eq(SceneInfo::getId, id));
+        boolean successFlag = update(new SceneInfo().setDeleteFlag(1),
+                new LambdaQueryWrapper<SceneInfo>().eq(SceneInfo::getId, id));
         if (successFlag) {
-            drawDataService.update(new DrawData().setDeleteFlag(1), new LambdaQueryWrapper<DrawData>().eq(DrawData::getSceneId, id));
+            // 软删除draw_data
+            drawDataService.update(new DrawData().setDeleteFlag(1),
+                    new LambdaQueryWrapper<DrawData>().eq(DrawData::getSceneId, id));
+
+            // 新增:删除scene_plan_ext中的数据
+            scenePlanExtService.remove(new LambdaQueryWrapper<ScenePlanExt>()
+                    .eq(ScenePlanExt::getSceneId, id));
+
+            // 新增:删除scene_plan中的数据
+            scenePlanService.remove(new LambdaQueryWrapper<ScenePlan>()
+                    .eq(ScenePlan::getSceneId, id));
         }
         return successFlag;
     }
-
+//  end
     @Override
     public List<SceneInfo> getSimpleListByTaskIdAndType(String taskId, String type) {
         return baseMapper.getSimpleListByTaskIdAndType(taskId, type);
@@ -2170,30 +2239,100 @@ public class SceneInfoServiceImpl extends ServiceImpl<SceneInfoMapper, SceneInfo
         return jsonObjectList;
     }
 
-    @Override
-    public List<DrawData> deployPolice(DeployPoliceData deployPoliceData) {
-        String taskId = deployPoliceData.getTaskId();
-        String sceneId = deployPoliceData.getSceneId();
-        String basicDataId = deployPoliceData.getBasicDataId();
-        List<DrawData> policeData = new ArrayList<>();
-        for (JSONObject jsonObject : deployPoliceData.getPoliceData()) {
-            String featureTypeId = jsonObject.getString("featureTypeId");
-            List<FeaturePositionData> positions = pointInfoService.getFeaturePosition(basicDataId, featureTypeId);
-            for (FeaturePositionData data : positions) {
-                DrawData drawData = jsonObject.getObject("drawData", DrawData.class);
-                if (drawData == null) {
-                    continue;
-                }
-                drawData.setTaskId(taskId);
-                drawData.setSceneId(sceneId);
-                policeData.add(drawDataService.updatePoliceDrawData(drawData, data.getGeojson().getObject("coordinates", List.class), data.getWeizhi(), data.getType()));
-            }
-        }
-        drawDataService.saveOrUpdateBatch(policeData);
-        return policeData;
+//    @Override
+//    public List<DrawData> deployPolice(DeployPoliceData deployPoliceData) {
+//        String taskId = deployPoliceData.getTaskId();
+//        String sceneId = deployPoliceData.getSceneId();
+//        String basicDataId = deployPoliceData.getBasicDataId();
+//        List<DrawData> policeData = new ArrayList<>();
+//        for (JSONObject jsonObject : deployPoliceData.getPoliceData()) {
+//            String featureTypeId = jsonObject.getString("featureTypeId");
+//            List<FeaturePositionData> positions = pointInfoService.getFeaturePosition(basicDataId, featureTypeId);
+//            for (FeaturePositionData data : positions) {
+//                DrawData drawData = jsonObject.getObject("drawData", DrawData.class);
+//                if (drawData == null) {
+//                    continue;
+//                }
+//                drawData.setTaskId(taskId);
+//                drawData.setSceneId(sceneId);
+//                policeData.add(drawDataService.updatePoliceDrawData(drawData, data.getGeojson().getObject("coordinates", List.class), data.getWeizhi(), data.getType()));
+//            }
+//        }
+//        drawDataService.saveOrUpdateBatch(policeData);
+//        return policeData;
+//    }
+//
+@Override
+@Transactional(rollbackFor = Exception.class)
+public List<DrawData> deployPolice(DeployPoliceData deployPoliceData) {
+    String taskId = deployPoliceData.getTaskId();
+    String sceneId = deployPoliceData.getSceneId();
+    String basicDataId = deployPoliceData.getBasicDataId();
+    String id = deployPoliceData.getId();
+
+    // 无论是创建还是更新,都先清理该场景的旧数据
+    scenePlanExtService.remove(new LambdaQueryWrapper<ScenePlanExt>()
+            .eq(ScenePlanExt::getSceneId, sceneId)
+            .eq(ScenePlanExt::getPlanNode, "警力部署"));
+
+    List<DrawData> oldDrawData = drawDataService.list(new LambdaQueryWrapper<DrawData>()
+            .eq(DrawData::getDeleteFlag, 0)
+            .eq(DrawData::getSceneId, sceneId)
+            .eq(DrawData::getPlanNode, "警力部署"));
+
+    if (!CollectionUtils.isEmpty(oldDrawData)) {
+        oldDrawData.forEach(drawData -> drawData.setDeleteFlag(1));
+        drawDataService.updateBatchById(oldDrawData);
     }
 
+    List<DrawData> policeData = new ArrayList<>();
+    ScenePlanExt scenePlanExt = new ScenePlanExt();
+    scenePlanExt.setId(IdWorker.get32UUID());
+    scenePlanExt.setSceneId(sceneId);
+    scenePlanExt.setPlanNode("警力部署");
 
+    JSONArray allFeatureData = new JSONArray();
+
+    for (JSONObject jsonObject : deployPoliceData.getPoliceData()) {
+        String featureTypeId = jsonObject.getString("featureTypeId");
+        String featureTypName = jsonObject.getString("featureTypName");
+        String userData = jsonObject.getString("userData");
+        Integer num = jsonObject.getInteger("num");
+
+        // 关键修改:保存完整的要素类型配置到 data.features
+        JSONObject featureConfig = new JSONObject();
+        featureConfig.put("featureTypeId", featureTypeId);
+        featureConfig.put("featureTypName", featureTypName);
+        featureConfig.put("userData", userData);  // 添加警力类型
+        featureConfig.put("num", num);            // 添加人数
+        allFeatureData.add(featureConfig);
+
+        // 创建标绘数据
+        List<FeaturePositionData> positions = pointInfoService.getFeaturePosition(basicDataId, featureTypeId);
+        for (FeaturePositionData data : positions) {
+            DrawData drawData = jsonObject.getObject("drawData", DrawData.class);
+            if (drawData == null) {
+                continue;
+            }
+            drawData.setTaskId(taskId);
+            drawData.setSceneId(sceneId);
+            drawData.setPlanNode("警力部署");
+            policeData.add(drawDataService.updatePoliceDrawData(drawData,
+                    data.getGeojson().getObject("coordinates", List.class),
+                    data.getWeizhi(),
+                    data.getType()));
+        }
+    }
+
+    JSONObject extData = new JSONObject();
+    extData.put("features", allFeatureData);
+    scenePlanExt.setData(extData);
+
+    drawDataService.saveOrUpdateBatch(policeData);
+    scenePlanExtService.save(scenePlanExt);
+
+    return policeData;
+}
     @Override
     public List<BasicDataDTO> getSceneResourceTree(List<String> sceneIds) {
         if (CollectionUtils.isEmpty(sceneIds)) {

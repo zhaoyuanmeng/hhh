@@ -9,12 +9,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFStyle;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -159,7 +162,7 @@ public class TaskArchivesDataServiceImpl extends ServiceImpl<TaskArchivesDataMap
      * @throws IOException
      */
     @Override
-    public void parseToDb(String filePath, String businessId) throws IOException {
+    public void parseToDb(String filePath, String businessId,String fileName) throws IOException {
         List<TaskArchivesData> dataList = new ArrayList<>();
         FileInputStream fis = new FileInputStream(filePath);
         // 创建XWPFDocument对象
@@ -177,14 +180,17 @@ public class TaskArchivesDataServiceImpl extends ServiceImpl<TaskArchivesDataMap
         // 遍历所有段落
         for (XWPFParagraph p : document.getParagraphs()) {
             if (p.getStyleID() != null) {
-                if ("2".equals(p.getStyleID())) {
+                XWPFStyle xwpfStyle = document.getStyles().getStyle(p.getStyleID());
+                String styleName = xwpfStyle.getName();
+
+                if ("heading 1".equals(styleName) || "标题 1".equals(styleName)) {
                     formattedContent = new ArrayList<>();
                     secondFormattedContent = new ArrayList<>();
                     secondTitle = "";
                     //标题
                     title = getXWPFParagraphText(p, true);
                     titleId = IdWorker.getIdStr();
-                } else if ("3".equals(p.getStyleID())) {
+                } else if ("heading 2".equals(styleName) || "标题 2".equals(styleName)) {
                     secondFormattedContent = new ArrayList<>();
                     //标题
                     secondTitle = getXWPFParagraphText(p, true);
@@ -215,6 +221,7 @@ public class TaskArchivesDataServiceImpl extends ServiceImpl<TaskArchivesDataMap
 //                    String htmlContent = toFormattedHtml(formattedContent);
                     dataMap.put(title, formattedContent);
                 } else if (StringUtils.hasText(subject) && !p.getText().equals(subject)) {
+                    subject += p.getParagraphText();
 //                    String htmlContent = toFormattedHtml(secondFormattedContent);
 //                    String asdf = subject;
                     //简介
@@ -250,15 +257,16 @@ public class TaskArchivesDataServiceImpl extends ServiceImpl<TaskArchivesDataMap
                 saveBatch(dataList);
             }
 
-            if (StringUtils.hasText(subject)) {
-                TaskArchivesData taskArchivesData = new TaskArchivesData();
-                taskArchivesData.setId(IdWorker.getIdStr());
-                taskArchivesData.setBusinessId(businessId);
-                taskArchivesData.setParentId("");
-                taskArchivesData.setTitle("标题");
-                taskArchivesData.setContent(subject);
-                save(taskArchivesData);
+            if (!StringUtils.hasText(subject)) {
+                subject= fileName;
             }
+            TaskArchivesData taskArchivesData = new TaskArchivesData();
+            taskArchivesData.setId(IdWorker.getIdStr());
+            taskArchivesData.setBusinessId(businessId);
+            taskArchivesData.setParentId("");
+            taskArchivesData.setTitle("标题");
+            taskArchivesData.setContent(subject);
+            save(taskArchivesData);
         }
     }
 
