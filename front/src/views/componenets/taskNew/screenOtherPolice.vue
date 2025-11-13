@@ -989,7 +989,8 @@ const dataCreat = (arr) => {
       taskId: taskInfo.value.id ? taskInfo.value.id : 'test',  
       sceneId: screenInfo.value.id,  
       basicDataId: screenInfo.value.basicDataId,  
-      policeData: getPoliceMarker(arr),  
+      policeData: getPoliceMarker(arr), // 已包含 source: 'auto' 标识  
+      // 不传递 groupRules  
     };  
       
     // 如果有updateNodeId,说明是更新操作  
@@ -1064,156 +1065,158 @@ const drawNewPoliceData = async (arrs) => {
   }
 };
 //  封装警力数据
-const getPoliceMarker = (arr) => {
-  let list = [];
-  let counter = 0;
-  for (const item of arr) {
-    let markerInfo;
-    if (item.userData === "无人机反制") {
-      let markerObj = {
-        id: `police${new Date().getTime()}${++counter}`,
-        groupId: "uav",
-        userData: "无人机反制",
-        coordinate: [0, 0, 0], //坐标位置
-        coordinateType: 0, //默认0是投影坐标系，也可以设置为经纬度空间坐标系值为1
-        text: "无人机", //显示的文字
-        textSize: 120, //3D标注显示文字大小
-        textColor: "#000080", //3D标注显示文字颜色
-        textOutlineSize: 1, //3D标注显示文字轮廓大小
-        textOutlineColor: Color.Black, // 3D标注显示文字轮廓颜色
-        textFixed: false, // 3D标注显示文字是否固定文本朝向
-        fixedSize: true, // 默认尺寸 非近大远小
-        textVisible: true, //3D标注显示文字是否显示文本
-        textLocation: [0, 0, 0.1], // 文字位置
-        textRotation: [0, 90, 0], // 文字旋转
-        textScale: [1, 1, 1], // 文字缩放
-        pointName: "/JC_CustomAssets/EffectLibrary/Exhibition/Point/Point_A", //3D标注展示的特效名称
-        pointVisible: true, //3D标注是否显示
-        pointScale: 1, //3D标注整体缩放比例
-        range: [0, 2000], //3D标注的可视距离范围：[min,max]，单位：米
-        autoHeight: false, //自动判断下方是否有物体，设置正确高度，默认值：false
-        collision: true, //默认开启碰撞
-      };
-      let uavObj = {
-        id: markerObj.id,
-        coordinate: [0, 0, 0], //辐射圈坐标位置
-        coordinateType: 0, //坐标系类型，取值范围：0为Projection类型，1为WGS84类型，2为火星坐标系(GCJ02)，3为百度坐标系(BD09)，默认值：0
-        radius: 100, //辐射半径
-        rippleNumber: 5, //波纹数量
-        color: "#130FEB", //颜色
-        intensity: 0.5, //亮度
-        autoHeight: false, //自动判断下方是否有物体
-        userData: "无人机",
-        groupId: "uav",
-      };
-      let customObj = {
-        id: markerObj.id, //自定义对象唯一id
-        pakFilePath: "@path:DTS_Library_6.1_240731.pak", //资源库pak文件路径,推荐使用cloud内置的文件资源管理器加载pak并使用@path方式传入参数
-        assetPath:
-          "/JC_CustomAssets/ObjectLibrary/Exhibition/交通工具/其他/无人机_1", //资源目录，自定义对象在pak文件资源包里的相对路径
-        location: [0, 0, 0], //位置坐标
-        coordinateType: 0, // 坐标系类型
-        rotation: [0, 0, 0], // 世界坐标系旋转
-        range: [0, 10000], //可见范围
-        groupId: "uav",
-        userData: markerObj.id,
-        localRotation: [0, 0, 0], //模型自身旋转
-        scale: [1, 1, 1], //模型缩放
-        isEffectRotation: true, //是否开启旋转效果
-        smoothMotion: 1, //1: 平滑移动，0: 跳跃移动
-        supportAttach: true, //不支持贴画贴合
-        visible: true, //模型加载后默认是否显示
-      };
-      let allObj = {
-        id: markerObj.id,
-        info: { num: Number(item.num), weizhi: "", fangxian: "" },
-        customData: customObj,
-        marker: markerObj,
-        uavData: uavObj,
-      };
-      markerInfo = allObj;
-    } else {
-      let markerObj = {
-        id: `police${new Date().getTime()}${++counter}`,
-        userData: item.userData,
-        groupId: "police",
-        coordinate: [0, 0, 0], //坐标位置
-        coordinateType: 0, //默认0是投影坐标系，也可以设置为经纬度空间坐标系值为1
-        text: item.userData, //显示的文字
-        textSize: 120, //3D标注显示文字大小
-        textColor: "#000080", //3D标注显示文字颜色
-        textOutlineSize: 1, //3D标注显示文字轮廓大小
-        textOutlineColor: Color.Black, // 3D标注显示文字轮廓颜色
-        textFixed: false, // 3D标注显示文字是否固定文本朝向
-        fixedSize: true, // 默认尺寸 非近大远小
-        textVisible: true, //3D标注显示文字是否显示文本
-        textLocation: [0, 0, 0.1], // 文字位置
-        textRotation: [0, 90, 0], // 文字旋转
-        textScale: [1, 1, 1], // 文字缩放
-        pointName: "/JC_CustomAssets/EffectLibrary/Exhibition/Point/Point_A", //3D标注展示的特效名称
-        pointVisible: true, //3D标注是否显示
-        pointScale: 1, //3D标注整体缩放比例
-        range: [0, 2000], //3D标注的可视距离范围：[min,max]，单位：米
-        autoHeight: false, //自动判断下方是否有物体，设置正确高度，默认值：false
-        collision: true, //默认开启碰撞
-      };
-      let path, pak;
-      if (item.userData === "交通哨") {
-        pak = "@path:人物打包.pak";
-        path = "/JC_CustomAssets/ObjectLibrary/Exhibition/人物跟随/交警";
-      } else if (item.userData === "快反力量" || item.userData === "机动力量") {
-        pak = "@path:人物打包.pak";
-        path = "/JC_CustomAssets/ObjectLibrary/Exhibition/人物跟随/特种兵";
-      } else if (item.userData === "固定哨") {
-        pak = "@path:DTS_Library_6.1_240731.pak";
-        path = "/JC_CustomAssets/RoleLibrary/Exhibition/动态人物/男角色_1";
-      } else {
-        pak = "@path:人物打包.pak";
-        path = "/JC_CustomAssets/ObjectLibrary/Exhibition/人物跟随/警察";
-      }
-      let customObj = {
-        id: markerObj.id,
-        pakFilePath: pak, //资源库pak文件路径,推荐使用cloud内置的文件资源管理器加载pak并使用@path方式传入参数
-        assetPath: path, //资源目录，自定义对象在pak文件资源包里的相对路径
-        location: [0, 0, 0], //位置坐标
-        coordinateType: 0, // 坐标系类型
-        rotation: [0, 0, 0], // 世界坐标系旋转
-        range: [0, 10000], //可见范围
-        groupId: "police",
-        userData: markerObj.id,
-        localRotation: [0, 90, 0], //模型自身旋转
-        scale: [1.3, 1.3, 1.3], //模型缩放
-        isEffectRotation: true, //是否开启旋转效果
-        smoothMotion: 1, //1: 平滑移动，0: 跳跃移动
-        supportAttach: true, //不支持贴画贴合
-        visible: true, //模型加载后默认是否显示
-      };
-      let allObj = {
-        id: markerObj.id,
-        info: { num: Number(item.num), weizhi: "", fangxian: "" },
-        customData: customObj,
-        marker: markerObj,
-      };
-      markerInfo = allObj;
-    }
-    let obj = {
-      drawData: {
-        planNode: "警力部署",
-        policeType:
-          item.userData === "快反力量" || item.userData === "机动力量"
-            ? "应急处突警力"
-            : "执勤警力",
-        type: markerInfo.marker.groupId,
-        data: markerInfo,
-      },
-      featureTypeId: item.featureTypeId ?item.featureTypeId:null,
-      featureTypName: item.featureTypName ? item.featureTypName :null,  // 添加这行  
-      userData: item.userData ? item.userData : null,               // 添加这行  
-      num: item.num ? item.num :null,                         // 添加这行  
-    };
-    list.push(obj);
-  }
-  return list;
+const getPoliceMarker = (arr) => {  
+  let list = [];  
+  let counter = 0;  
+  for (const item of arr) {  
+    let markerInfo;  
+    if (item.userData === "无人机反制") {  
+      let markerObj = {  
+        id: `police${new Date().getTime()}${++counter}`,  
+        groupId: "uav",  
+        userData: "无人机反制",  
+        source: 'auto', // 新增标识  
+        coordinate: [0, 0, 0],  
+        coordinateType: 0,  
+        text: "无人机",  
+        textSize: 120,  
+        textColor: "#000080",  
+        textOutlineSize: 1,  
+        textOutlineColor: Color.Black,  
+        textFixed: false,  
+        fixedSize: true,  
+        textVisible: true,  
+        textLocation: [0, 0, 0.1],  
+        textRotation: [0, 90, 0],  
+        textScale: [1, 1, 1],  
+        pointName: "/JC_CustomAssets/EffectLibrary/Exhibition/Point/Point_A",  
+        pointVisible: true,  
+        pointScale: 1,  
+        range: [0, 2000],  
+        autoHeight: false,  
+        collision: true,  
+      };  
+      let uavObj = {  
+        id: markerObj.id,  
+        coordinate: [0, 0, 0],  
+        coordinateType: 0,  
+        radius: 100,  
+        rippleNumber: 5,  
+        color: "#130FEB",  
+        intensity: 0.5,  
+        autoHeight: false,  
+        userData: "无人机",  
+        groupId: "uav",  
+      };  
+      let customObj = {  
+        id: markerObj.id,  
+        pakFilePath: "@path:DTS_Library_6.1_240731.pak",  
+        assetPath: "/JC_CustomAssets/ObjectLibrary/Exhibition/交通工具/其他/无人机_1",  
+        location: [0, 0, 0],  
+        coordinateType: 0,  
+        rotation: [0, 0, 0],  
+        range: [0, 10000],  
+        groupId: "uav",  
+        userData: markerObj.id,  
+        localRotation: [0, 0, 0],  
+        scale: [1, 1, 1],  
+        isEffectRotation: true,  
+        smoothMotion: 1,  
+        supportAttach: true,  
+        visible: true,  
+      };  
+      let allObj = {  
+        id: markerObj.id,  
+        info: { num: Number(item.num), weizhi: "", fangxian: "" },  
+        customData: customObj,  
+        marker: markerObj,  
+        uavData: uavObj,  
+      };  
+      markerInfo = allObj;  
+    } else {  
+      let markerObj = {  
+        id: `police${new Date().getTime()}${++counter}`,  
+        userData: item.userData,  
+        source: 'auto', // 新增标识  
+        groupId: "police",  
+        coordinate: [0, 0, 0],  
+        coordinateType: 0,  
+        text: item.userData,  
+        textSize: 120,  
+        textColor: "#000080",  
+        textOutlineSize: 1,  
+        textOutlineColor: Color.Black,  
+        textFixed: false,  
+        fixedSize: true,  
+        textVisible: true,  
+        textLocation: [0, 0, 0.1],  
+        textRotation: [0, 90, 0],  
+        textScale: [1, 1, 1],  
+        pointName: "/JC_CustomAssets/EffectLibrary/Exhibition/Point/Point_A",  
+        pointVisible: true,  
+        pointScale: 1,  
+        range: [0, 2000],  
+        autoHeight: false,  
+        collision: true,  
+      };  
+      let path, pak;  
+      if (item.userData === "交通哨") {  
+        pak = "@path:人物打包.pak";  
+        path = "/JC_CustomAssets/ObjectLibrary/Exhibition/人物跟随/交警";  
+      } else if (item.userData === "快反力量" || item.userData === "机动力量") {  
+        pak = "@path:人物打包.pak";  
+        path = "/JC_CustomAssets/ObjectLibrary/Exhibition/人物跟随/特种兵";  
+      } else if (item.userData === "固定哨") {  
+        pak = "@path:DTS_Library_6.1_240731.pak";  
+        path = "/JC_CustomAssets/RoleLibrary/Exhibition/动态人物/男角色_1";  
+      } else {  
+        pak = "@path:人物打包.pak";  
+        path = "/JC_CustomAssets/ObjectLibrary/Exhibition/人物跟随/警察";  
+      }  
+      let customObj = {  
+        id: markerObj.id,  
+        pakFilePath: pak,  
+        assetPath: path,  
+        location: [0, 0, 0],  
+        coordinateType: 0,  
+        rotation: [0, 0, 0],  
+        range: [0, 10000],  
+        groupId: "police",  
+        userData: markerObj.id,  
+        localRotation: [0, 90, 0],  
+        scale: [1.3, 1.3, 1.3],  
+        isEffectRotation: true,  
+        smoothMotion: 1,  
+        supportAttach: true,  
+        visible: true,  
+      };  
+      let allObj = {  
+        id: markerObj.id,  
+        info: { num: Number(item.num), weizhi: "", fangxian: "" },  
+        customData: customObj,  
+        marker: markerObj,  
+      };  
+      markerInfo = allObj;  
+    }  
+    let obj = {  
+      drawData: {  
+        planNode: "警力部署",  
+        policeType:  
+          item.userData === "快反力量" || item.userData === "机动力量"  
+            ? "应急处突警力"  
+            : "执勤警力",  
+        type: markerInfo.marker.groupId,  
+        data: markerInfo,  
+      },  
+      featureTypeId: item.featureTypeId ? item.featureTypeId : null,  
+      featureTypName: item.featureTypName ? item.featureTypName : null,  
+      userData: item.userData ? item.userData : null,  
+      num: item.num ? item.num : null,  
+      source: 'auto', // 在最外层也添加标识  
+    };  
+    list.push(obj);  
+  }  
+  return list;  
 };
 
 const extractImagePath = (url) => {
