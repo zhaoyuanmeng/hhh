@@ -2270,19 +2270,52 @@ public List<DrawData> deployPolice(DeployPoliceData deployPoliceData) {
     String basicDataId = deployPoliceData.getBasicDataId();
     String id = deployPoliceData.getId();
 
-    // 无论是创建还是更新,都先清理该场景的旧数据
+    // 关键修改1: 只删除 source='auto' 的数据,保留手动添加的数据
     scenePlanExtService.remove(new LambdaQueryWrapper<ScenePlanExt>()
             .eq(ScenePlanExt::getSceneId, sceneId)
             .eq(ScenePlanExt::getPlanNode, "警力部署"));
 
+    // 查询该场景下的所有警力数据
     List<DrawData> oldDrawData = drawDataService.list(new LambdaQueryWrapper<DrawData>()
             .eq(DrawData::getDeleteFlag, 0)
             .eq(DrawData::getSceneId, sceneId)
             .eq(DrawData::getPlanNode, "警力部署"));
 
+    // 关键修改2: 只删除 source='auto' 的数据
     if (!CollectionUtils.isEmpty(oldDrawData)) {
-        oldDrawData.forEach(drawData -> drawData.setDeleteFlag(1));
-        drawDataService.updateBatchById(oldDrawData);
+        oldDrawData.forEach(drawData -> {
+            // 检查 data 字段中的 source 标识
+            JSONObject dataJson = drawData.getData();
+            if (dataJson != null) {
+                // 从 data.data.marker.source 或 data.source 中获取标识
+                String source = null;
+                if (dataJson.containsKey("data")) {
+                    JSONObject innerData = dataJson.getJSONObject("data");
+                    if (innerData != null && innerData.containsKey("marker")) {
+                        JSONObject marker = innerData.getJSONObject("marker");
+                        if (marker != null) {
+                            source = marker.getString("source");
+                        }
+                    }
+                }
+                // 如果没有找到,尝试从顶层获取
+                if (source == null && dataJson.containsKey("source")) {
+                    source = dataJson.getString("source");
+                }
+
+                // 只删除 source='auto' 的数据
+                if ("auto".equals(source)) {
+                    drawData.setDeleteFlag(1);
+                }
+            }
+        });
+        // 只更新被标记为删除的数据
+        List<DrawData> toDelete = oldDrawData.stream()
+                .filter(d -> d.getDeleteFlag() == 1)
+                .collect(Collectors.toList());
+        if (!toDelete.isEmpty()) {
+            drawDataService.updateBatchById(toDelete);
+        }
     }
 
     List<DrawData> policeData = new ArrayList<>();
@@ -2298,25 +2331,46 @@ public List<DrawData> deployPolice(DeployPoliceData deployPoliceData) {
         String featureTypName = jsonObject.getString("featureTypName");
         String userData = jsonObject.getString("userData");
         Integer num = jsonObject.getInteger("num");
+        String source = jsonObject.getString("source"); // 获取前端传来的 source 标识
 
-        // 关键修改:保存完整的要素类型配置到 data.features
         JSONObject featureConfig = new JSONObject();
         featureConfig.put("featureTypeId", featureTypeId);
         featureConfig.put("featureTypName", featureTypName);
-        featureConfig.put("userData", userData);  // 添加警力类型
-        featureConfig.put("num", num);            // 添加人数
+        featureConfig.put("userData", userData);
+        featureConfig.put("num", num);
+        featureConfig.put("source", source); // 保存 source 标识
         allFeatureData.add(featureConfig);
 
-        // 创建标绘数据
         List<FeaturePositionData> positions = pointInfoService.getFeaturePosition(basicDataId, featureTypeId);
         for (FeaturePositionData data : positions) {
             DrawData drawData = jsonObject.getObject("drawData", DrawData.class);
             if (drawData == null) {
                 continue;
             }
+
+            // 关键修改3: 在 data 字段中添加 source 标识
+            JSONObject dataJson = drawData.getData();
+            if (dataJson == null) {
+                dataJson = new JSONObject();
+            }
+            dataJson.put("source", source); // 在顶层添加 source
+
+            // 同时在 data.data.marker 中也添加 source (如果存在)
+            if (dataJson.containsKey("data")) {
+                JSONObject innerData = dataJson.getJSONObject("data");
+                if (innerData != null && innerData.containsKey("marker")) {
+                    JSONObject marker = innerData.getJSONObject("marker");
+                    if (marker != null) {
+                        marker.put("source", source);
+                    }
+                }
+            }
+
+            drawData.setData(dataJson);
             drawData.setTaskId(taskId);
             drawData.setSceneId(sceneId);
             drawData.setPlanNode("警力部署");
+
             policeData.add(drawDataService.updatePoliceDrawData(drawData,
                     data.getGeojson().getObject("coordinates", List.class),
                     data.getWeizhi(),
