@@ -1,0 +1,593 @@
+[
+    {
+        "id": "36e92cf805177e26d30c22587a5fc5b3",
+        "planNode": "警力部署",
+        "data": {
+            "features": [
+                {
+                    "userData": "固定哨",
+                    "featureTypName": "高铁基站",
+                    "num": 4,
+                    "source": "auto",
+                    "featureTypeId": "1bad4da452494a9cb6ee2f1799984ce9"
+                }
+            ]
+        },
+        "sceneId": "12a0c92e3d7d8b0e5bc6907d6c0ca7ce",
+        "policeData": {
+            "postStatistics": [
+                {
+                    "post": "固定哨",
+                    "num": 37
+                },
+                {
+                    "post": "交通哨",
+                    "num": 2
+                }
+            ],
+            "policeTypeOfLine": {
+                "onduty": 39,
+                "total": 39,
+                "emergency": 0
+            },
+            "groupData": [
+                {
+                    "jinglibushu": [
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "83.871公里高铁基站位置",
+                            "buildname": "",
+                            "num": 4,
+                            "groupid": "police",
+                            "id": "159b8c8f6690a20e1453b52d8a1711dc",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "78.295公里高铁基站位置",
+                            "buildname": "",
+                            "num": 4,
+                            "groupid": "police",
+                            "id": "d7d004536d49945d7ad9b5de0e82244c",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "90公里高铁基站位置",
+                            "buildname": "",
+                            "num": 4,
+                            "groupid": "police",
+                            "id": "e28744ec4ab91812d03884441f3f631b",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "102.75公里高铁基站位置",
+                            "buildname": "",
+                            "num": 4,
+                            "groupid": "police",
+                            "id": "539206094b2cfe585175eee1fb075e07",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "109.25公里高铁基站位置",
+                            "buildname": "",
+                            "num": 4,
+                            "groupid": "police",
+                            "id": "75a1ea8ad346896b4fa6c49b027ef891",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "114.8公里高铁基站位置",
+                            "buildname": "",
+                            "num": 4,
+                            "groupid": "police",
+                            "id": "133cdaea093740abb1f952016da84d00",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "121.58公里高铁基站位置",
+                            "buildname": "",
+                            "num": 4,
+                            "groupid": "police",
+                            "id": "5d1ad996358f14c8ad421ef593634ebb",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "交通哨",
+                            "weizhi": "1222222",
+                            "buildname": "",
+                            "num": 1,
+                            "groupid": "police",
+                            "id": "police1763436840758",
+                            "floornum": "",
+                            "fangxian": ""
+                        }
+                    ],
+                    "groupDesc": "",
+                    "policeNum": 29,
+                    "policeTypeOfGroup": [
+                        {
+                            "post": "固定哨",
+                            "num": 28
+                        },
+                        {
+                            "post": "交通哨",
+                            "num": 1
+                        }
+                    ],
+                    "group": ""
+                },
+                {
+                    "jinglibushu": [
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "90公里高铁基站位置",
+                            "buildname": "",
+                            "num": 3,
+                            "groupid": "police",
+                            "id": "79eff233d0a02e0d9d3fa18ae0907b72",
+                            "floornum": "",
+                            "fangxian": ""
+                        }
+                    ],
+                    "groupDesc": "",
+                    "policeNum": 3,
+                    "policeTypeOfGroup": [
+                        {
+                            "post": "固定哨",
+                            "num": 3
+                        }
+                    ],
+                    "group": "123333"
+                },
+                {
+                    "jinglibushu": [
+                        {
+                            "leixing": "交通哨",
+                            "weizhi": "123",
+                            "buildname": "",
+                            "num": 1,
+                            "groupid": "police",
+                            "id": "police1763018331495",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "83.871公里高铁基站位置",
+                            "buildname": "",
+                            "num": 3,
+                            "groupid": "police",
+                            "id": "5f2f0ce6e13b4dcdb7bb6da861f0f2d0",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "78.295公里高铁基站位置",
+                            "buildname": "",
+                            "num": 3,
+                            "groupid": "police",
+                            "id": "a4c7146a337374e50c2fc11c26394dd7",
+                            "floornum": "",
+                            "fangxian": ""
+                        }
+                    ],
+                    "groupDesc": "",
+                    "policeNum": 7,
+                    "policeTypeOfGroup": [
+                        {
+                            "post": "固定哨",
+                            "num": 6
+                        },
+                        {
+                            "post": "交通哨",
+                            "num": 1
+                        }
+                    ],
+                    "group": "22"
+                }
+            ],
+            "fangxian": ""
+        },
+        "placePoliceData": [
+            {
+                "weizhi": "123",
+                "data": [
+                    {
+                        "leixing": "交通哨",
+                        "buildName": "",
+                        "num": 1,
+                        "groupId": "",
+                        "id": "police1763018331495",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "83.871公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 3,
+                        "groupId": "",
+                        "id": "5f2f0ce6e13b4dcdb7bb6da861f0f2d0",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "78.295公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 3,
+                        "groupId": "",
+                        "id": "a4c7146a337374e50c2fc11c26394dd7",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "90公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 3,
+                        "groupId": "",
+                        "id": "79eff233d0a02e0d9d3fa18ae0907b72",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "83.871公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 4,
+                        "groupId": "",
+                        "id": "159b8c8f6690a20e1453b52d8a1711dc",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "78.295公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 4,
+                        "groupId": "",
+                        "id": "d7d004536d49945d7ad9b5de0e82244c",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "90公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 4,
+                        "groupId": "",
+                        "id": "e28744ec4ab91812d03884441f3f631b",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "102.75公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 4,
+                        "groupId": "",
+                        "id": "539206094b2cfe585175eee1fb075e07",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "109.25公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 4,
+                        "groupId": "",
+                        "id": "75a1ea8ad346896b4fa6c49b027ef891",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "114.8公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 4,
+                        "groupId": "",
+                        "id": "133cdaea093740abb1f952016da84d00",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "121.58公里高铁基站位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 4,
+                        "groupId": "",
+                        "id": "5d1ad996358f14c8ad421ef593634ebb",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "1222222",
+                "data": [
+                    {
+                        "leixing": "交通哨",
+                        "buildName": "",
+                        "num": 1,
+                        "groupId": "",
+                        "id": "police1763436840758",
+                        "floorNum": ""
+                    }
+                ]
+            }
+        ],
+        "statisticalData": {
+            "onduty": 39,
+            "total": 39,
+            "emergency": 0
+        }
+    }
+]
+
+[
+    {
+        "id": "c7eb471c476ebb44946c5100b95b467d",
+        "planNode": "警力部署",
+        "data": {
+            "features": [
+                {
+                    "userData": "固定哨",
+                    "featureTypName": "高速出入口",
+                    "num": 2,
+                    "source": "auto",
+                    "featureTypeId": "24ac52eff48143cb8b9baa7d4da7d5b6"
+                }
+            ]
+        },
+        "sceneId": "2aaee44709d3f7cb8372c65c79faa48b",
+        "policeData": {
+            "postStatistics": [
+                {
+                    "post": "固定哨",
+                    "num": 6
+                }
+            ],
+            "policeTypeOfLine": {
+                "onduty": 6,
+                "total": 6,
+                "emergency": 0
+            },
+            "groupData": [
+                {
+                    "jinglibushu": [
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "1413.0000公里高速出入口位置",
+                            "buildname": "",
+                            "num": 2,
+                            "groupid": "police",
+                            "id": "52be7c695c8f4440d73b765cd695ddf8",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "1413.0000公里高速出入口位置",
+                            "buildname": "",
+                            "num": 2,
+                            "groupid": "police",
+                            "id": "aaef9913433a2f7eddbec73b16d597b5",
+                            "floornum": "",
+                            "fangxian": ""
+                        },
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "1398公里高速出入口位置",
+                            "buildname": "",
+                            "num": 2,
+                            "groupid": "police",
+                            "id": "47d4391e1c34a99815747593568ea39c",
+                            "floornum": "",
+                            "fangxian": ""
+                        }
+                    ],
+                    "groupDesc": "",
+                    "policeNum": 6,
+                    "policeTypeOfGroup": [
+                        {
+                            "post": "固定哨",
+                            "num": 6
+                        }
+                    ],
+                    "group": ""
+                }
+            ],
+            "fangxian": ""
+        },
+        "placePoliceData": [
+            {
+                "weizhi": "1413.0000公里高速出入口位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 2,
+                        "groupId": "",
+                        "id": "52be7c695c8f4440d73b765cd695ddf8",
+                        "floorNum": ""
+                    },
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 2,
+                        "groupId": "",
+                        "id": "aaef9913433a2f7eddbec73b16d597b5",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "1398公里高速出入口位置",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 2,
+                        "groupId": "",
+                        "id": "47d4391e1c34a99815747593568ea39c",
+                        "floorNum": ""
+                    }
+                ]
+            }
+        ],
+        "statisticalData": {
+            "onduty": 6,
+            "total": 6,
+            "emergency": 0
+        }
+    },
+    {
+        "id": "",
+        "planNode": "警力部署",
+        "data": "",
+        "sceneId": "2aaee44709d3f7cb8372c65c79faa48b",
+        "policeData": {
+            "postStatistics": [
+                {
+                    "post": "固定哨",
+                    "num": 1
+                },
+                {
+                    "post": "交通哨",
+                    "num": 1
+                }
+            ],
+            "policeTypeOfLine": {
+                "onduty": 2,
+                "total": 2,
+                "emergency": 0
+            },
+            "groupData": [
+                {
+                    "jinglibushu": [
+                        {
+                            "leixing": "固定哨",
+                            "weizhi": "33",
+                            "buildname": "",
+                            "num": 1,
+                            "groupid": "police",
+                            "id": "police1737356398104",
+                            "floornum": "",
+                            "fangxian": "一道防线"
+                        }
+                    ],
+                    "groupDesc": "",
+                    "policeNum": 1,
+                    "policeTypeOfGroup": [
+                        {
+                            "post": "固定哨",
+                            "num": 1
+                        }
+                    ],
+                    "group": ""
+                },
+                {
+                    "jinglibushu": [
+                        {
+                            "leixing": "交通哨",
+                            "weizhi": "12",
+                            "buildname": "",
+                            "num": 1,
+                            "groupid": "police",
+                            "id": "police1763378152105",
+                            "floornum": "",
+                            "fangxian": "一道防线"
+                        }
+                    ],
+                    "groupDesc": "",
+                    "policeNum": 1,
+                    "policeTypeOfGroup": [
+                        {
+                            "post": "交通哨",
+                            "num": 1
+                        }
+                    ],
+                    "group": "123"
+                }
+            ],
+            "fangxian": "一道防线"
+        },
+        "placePoliceData": [
+            {
+                "weizhi": "33",
+                "data": [
+                    {
+                        "leixing": "固定哨",
+                        "buildName": "",
+                        "num": 1,
+                        "groupId": "",
+                        "id": "police1737356398104",
+                        "floorNum": ""
+                    }
+                ]
+            },
+            {
+                "weizhi": "12",
+                "data": [
+                    {
+                        "leixing": "交通哨",
+                        "buildName": "",
+                        "num": 1,
+                        "groupId": "",
+                        "id": "police1763378152105",
+                        "floorNum": ""
+                    }
+                ]
+            }
+        ],
+        "statisticalData": {
+            "onduty": 2,
+            "total": 2,
+            "emergency": 0
+        }
+    }
+]
+
