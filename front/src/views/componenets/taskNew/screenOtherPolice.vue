@@ -830,6 +830,158 @@ const validatePositiveInteger = (event, index) => {
 //   });
 // };
 // AI
+
+// 构造分组
+let processByDistanceGroups = (rawData, distanceGroups) => {
+      // 兼容 rawData 为空或非数组的情况
+      if (!rawData || !Array.isArray(rawData)) {
+        return rawData ? JSON.parse(JSON.stringify(rawData)) : [];
+      }
+
+      // 深拷贝数据，避免修改原数据（Vue3 响应式安全）
+      const processedData = JSON.parse(JSON.stringify(rawData));
+
+      processedData.forEach((item) => {
+        // 跳过非对象类型的项
+        if (item === null || typeof item !== 'object') return;
+
+        // 安全获取 policeData（避免 item.policeData 不存在导致的报错）
+        const policeData = item.policeData || {};
+
+        // 只处理 policeData.fangxian 为空的对象（兼容 policeData.fangxian 不存在的情况）
+        if (policeData.fangxian !== '') return;
+
+        // 安全获取 groupData（默认空数组，避免 undefined 报错）
+        const { groupData = [] } = policeData;
+        // 确保 groupData 是数组（兼容非数组的异常情况）
+        const safeGroupData = Array.isArray(groupData) ? groupData : [];
+
+        // 分离：需要重新分组的项（group 为空）和保留项（group 非空）
+        const emptyGroupItems = safeGroupData.filter(g => {
+          // 兼容 g 不是对象的情况
+          if (g === null || typeof g !== 'object') return false;
+          return g.group === '';
+        });
+        const keepGroupItems = safeGroupData.filter(g => {
+          if (g === null || typeof g !== 'object') return false;
+          return g.group !== '';
+        });
+
+        // 收集所有待分组的警力部署项（兼容 jinglibushu 非数组的情况）
+        const allJinglibushu = emptyGroupItems.flatMap(g => {
+          if (g?.jinglibushu && Array.isArray(g.jinglibushu)) {
+            return g.jinglibushu;
+          }
+          return []; // 非数组则视为空
+        });
+        if (allJinglibushu.length === 0) return;
+
+        // 按公里数范围分组（先初始化所有分组和一个未匹配组）
+        const groupMap = {};
+        // 兼容 distanceGroups 非数组的情况
+        const safeDistanceGroups = Array.isArray(distanceGroups) ? distanceGroups : [];
+        // 初始化规则分组
+        safeDistanceGroups.forEach(group => {
+          // 确保分组规则是有效的对象（包含 name/start/end）
+          if (group && typeof group === 'object' && group.name !== undefined) {
+            groupMap[group.name] = [];
+          }
+        });
+        // 初始化未匹配组（group 为空字符串）
+        groupMap[''] = [];
+
+        // 遍历警力项，分配到对应分组
+        allJinglibushu.forEach(jl => {
+          // 跳过非对象的警力项
+          if (jl === null || typeof jl !== 'object') return;
+
+          // 从 weizhi 中提取公里数（匹配数字+公里格式，如 "83.871公里..."）
+          // 兼容 weizhi 不存在或非字符串的情况
+          const weizhi = typeof jl.weizhi === 'string' ? jl.weizhi : '';
+          const kmMatch = weizhi.match(/(\d+(\.\d+)?)公里/);
+          if (!kmMatch) {
+            // 未匹配到公里数，放入未匹配组
+            groupMap[''].push(jl);
+            return;
+          }
+
+          const km = Number(kmMatch[1]); // 提取公里数值
+          // 兼容非数字的情况
+          if (isNaN(km)) {
+            groupMap[''].push(jl);
+            return;
+          }
+
+          let matched = false;
+
+          // 匹配公里数范围分组
+          safeDistanceGroups.forEach(group => {
+            // 确保分组规则的 start 和 end 是数字
+            if (
+              group && typeof group === 'object' &&
+              typeof group.start === 'number' &&
+              typeof group.end === 'number'
+            ) {
+              // 范围规则：start <= km < end
+              if (km >= group.start && km < group.end) {
+                groupMap[group.name].push(jl);
+                matched = true;
+              }
+            }
+          });
+
+          // 未匹配任何范围，放入未匹配组
+          if (!matched) {
+            groupMap[''].push(jl);
+          }
+        });
+
+        // 转换分组结果为原数据结构的 groupData 格式
+        const newGroupItems = [];
+        Object.entries(groupMap).forEach(([groupName, jinglibushuList]) => {
+          // 跳过空分组（避免生成无数据的组）
+          if (!jinglibushuList.length) return;
+
+          // 计算分组内的统计数据（与原结构保持一致）
+          // 1. 按 leixing 统计警力类型数量
+          const policeTypeOfGroup = jinglibushuList.reduce((stats, item) => {
+            // 兼容 item 非对象或 leixing/num 异常的情况
+            if (item === null || typeof item !== 'object') return stats;
+            const post = typeof item.leixing === 'string' ? item.leixing : '未知类型';
+            const num = typeof item.num === 'number' ? item.num : 0;
+
+            const existing = stats.find(s => s.post === post);
+            if (existing) {
+              existing.num += num;
+            } else {
+              stats.push({ post, num });
+            }
+            return stats;
+          }, []);
+
+          // 2. 计算分组总警力数
+          const policeNum = policeTypeOfGroup.reduce((total, item) => total + (item.num || 0), 0);
+
+          // 3. 生成分组项（保持原结构字段）
+          newGroupItems.push({
+            jinglibushu: jinglibushuList,
+            groupDesc: '', // 可根据需求自定义描述
+            policeNum,
+            policeTypeOfGroup,
+            group: groupName // 分组名称（规则中的 name 或空字符串）
+          });
+        });
+
+        // 合并保留项和新分组项，更新 groupData
+        item.policeData = {
+          ...policeData, // 保留原有其他属性
+          groupData: [...keepGroupItems, ...newGroupItems]
+        };
+      });
+
+      return processedData;
+};
+
 // 一键部警  
 const deployment = (item) => {
   console.log(item);
@@ -837,11 +989,13 @@ const deployment = (item) => {
 
   let params = { sceneId: screenInfo.value.id, planNode: "警力部署" };
   searchNodePlanToScreen(params).then((res) => {
-    getGSGtBasicList({ id: screenInfo.value.basicDataId }).then((basicRes) => {
+    getGSGtBasicList({ id: screenInfo.value.basicDataId }).then(async(basicRes) => {
       gsgtBasicList.value = basicRes.data;
       // 新增：加载分组规则
-      loadGroupRules(screenInfo.value.id);
+    await  loadGroupRules(screenInfo.value.id);
       if (res.data && res.data.length > 0 && res.data[0].extDataList && res.data[0].extDataList.length > 0) {
+        // 先去处理数据
+        res.data[0].extDataList = processByDistanceGroups(res.data[0].extDataList,groupRules.value)
         // 已有数据,需要回显  
         policArr.value = res.data;
         updateNodeId.value = res.data[0].extDataList[0].id;  // 注意:ID在extDataList[0]中  
@@ -1404,7 +1558,7 @@ const changeActive = (e) => {
     }
     let params = { sceneId: screenInfo.value.id, planNode: e };
     selectVal.value = e;
-    searchNodePlanToScreen(params).then((res) => {
+    searchNodePlanToScreen(params).then(async(res) => {
       if (res.data && res.data.length > 0) {
         updateNodeId.value = res.data[0].id;
         collapseData.value = res.data[0].data;
@@ -1413,6 +1567,13 @@ const changeActive = (e) => {
           g.camera.set(res.data[0].data.viewData, 1.5);
         }
         if (e !== "基本情况" || e !== "隐患排查") {
+          if(e == '警力部署'){
+           await  loadGroupRules(screenInfo.value.id);
+            if (res.data && res.data.length > 0 && res.data[0].extDataList && res.data[0].extDataList.length > 0) {
+              // 先去处理数据
+             res.data[0].extDataList = processByDistanceGroups(res.data[0].extDataList,groupRules.value)
+           }
+          }
           if (res.data[0].data) {
             dialogForm.value = res.data[0].data;
           }
